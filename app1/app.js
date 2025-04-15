@@ -33,13 +33,34 @@ function renderCurrentRoute() {
 
 // Función temporal para dashboard
 function renderDashboard(data = {}) {
+  // Obtener la fecha actual
+  const now = new Date();
+  const options = { weekday: "long", month: "short" };
+  const dateFormatter = new Intl.DateTimeFormat("es-ES", options);
+  const parts = dateFormatter.formatToParts(now);
+  // Extraer día de la semana y mes
+  const weekday = parts.find((part) => part.type === "weekday").value;
+  const month = parts.find((part) => part.type === "month").value;
+  // Obtener el día del mes
+  const day = now.getDate();
+
+  const formattedDate = `${weekday}, ${day} ${month}`;
+
   const app = document.getElementById("app");
   app.innerHTML = `
-    <div class="dashboard-container">
+    <section class="dashboard-container">
+      <div class="tabs">
+        <div class="tab active">Home</div>
+        <div class="tab">Mi pedido</div>
+        <div class="tab">Resultados</div>
+      </div>
+    <div class="dashboard-header">
       <h2>¡Hola! ${data.user ? data.user.username : ""}, ¿Qué haremos hoy?</h2>
-      <div class="message success">${data.message || ""}</div>
-      <button id="logout-btn" class="btn btn-primary">Cerrar Sesión</button>
-    </div>
+        <p class="date">${formattedDate}</p>
+        <div class="message success">${data.message || ""}</div>
+        <button id="logout-btn" class="btn btn-primary">Cerrar Sesión</button>
+      </div>
+    </section>
   `;
 
   document.getElementById("logout-btn").addEventListener("click", function () {
