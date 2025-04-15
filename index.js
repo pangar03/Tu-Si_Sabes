@@ -1,9 +1,9 @@
 const express = require("express");
 const path = require("path");
 const { createServer } = require("http");
+const cors = require("cors"); // Es recomendable añadir CORS
 
 const { initSocketInstance } = require("./server/services/socket.service");
-// IMPORTAR LOS ROUTERS AQUI
 const usersRouter = require("./server/routes/users.router");
 
 const PORT = 5050;
@@ -13,16 +13,17 @@ const httpServer = createServer(app);
 
 // MiddleWares
 app.use(express.json());
-// COLOCAR LOS MIDDLEWARES DE LAS APPS
+app.use(cors()); // Habilitar CORS para las solicitudes del frontend
 
-// Rutas (COLOCAR AQUI LOS ROUTERS)
-// app.use("/", myRouter);
+// Servir archivos estáticos
+app.use(express.static(path.join(__dirname, "app1")));
+
+// Rutas API
 app.use("/", usersRouter);
 
 // Services
 initSocketInstance(httpServer);
 
 httpServer.listen(PORT, () =>
-    console.log(`Server running at http://localhost:${PORT}`)
+  console.log(`Server running at http://localhost:${PORT}`)
 );
-
