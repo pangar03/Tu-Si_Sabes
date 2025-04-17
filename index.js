@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors()); // Habilitar CORS para las solicitudes del frontend
 
 // Servir archivos estáticos
-app.use(express.static(path.join(__dirname, "app1")));
+app.use(express.static(path.join(__dirname, "host-app")));
 
 // Rutas API
 app.use("/", usersRouter);
@@ -25,5 +25,5 @@ app.use("/", usersRouter);
 initSocketInstance(httpServer);
 
 httpServer.listen(PORT, () =>
-  console.log(`Server running at http://localhost:${PORT}`)
+    console.log(`Server running at http://localhost:${PORT}`)
 );
