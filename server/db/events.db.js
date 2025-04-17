@@ -24,7 +24,7 @@ const changeStatus = async (id, status) => {
     }
     event.status = status;
     return { code: 200, message: `Estado del evento actualizado a ${status} correctamente`, event };
-}
+};
 
 module.exports = {
     getEvents,
