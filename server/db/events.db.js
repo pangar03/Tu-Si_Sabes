@@ -6,7 +6,7 @@ const getEvents = async () => {
 
 const addEvent = async (event) => {
     events.push(event);
-    return { code: 200, message: "Evento añadido con éxito" };
+    return { code: 200, message: "Evento añadido con éxito", event };
 };
 
 const getEventById = async (id) => {
@@ -23,7 +23,7 @@ const changeStatus = async (id, status) => {
         return { code: 404, message: "Evento no encontrado" };
     }
     event.status = status;
-    return { code: 200, message: `Estado del evento actualizado a ${status} correctamente` };
+    return { code: 200, message: `Estado del evento actualizado a ${status} correctamente`, event };
 }
 
 module.exports = {

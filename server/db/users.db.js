@@ -1,4 +1,9 @@
-let users = [];
+let users = [
+  {
+    username: "admin",
+    password: "12345",
+  }
+];
 
 // For testing purposes
 const getUsers = async () => {

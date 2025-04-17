@@ -1,4 +1,5 @@
 const { getEvents, addEvent, getEventById, changeStatus } = require('../db/events.db');
+const { emitEvent } = require('../services/socket.service');
 
 const getEventsController = async (req, res) => {
     const response = await getEvents();
@@ -10,6 +11,7 @@ const addEventController = async (req, res) => {
     event.id = Date.now();
     event.createdAt = new Date(event.id).toLocaleString("es-CO", {"timeZone": "America/Bogota"});
     event.status = "pending";
+    event.substances = [];
     const response = await addEvent(event);
 
     res.send(response);
@@ -31,6 +33,7 @@ const changeStatusController = async (req, res) => {
     const status = req.body.status;
 
     const response = await changeStatus(id, status);
+    emitEvent("change-status", response);
     return res.send(response.message);
 };
 
