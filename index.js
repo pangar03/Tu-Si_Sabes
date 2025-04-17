@@ -5,6 +5,7 @@ const { createServer } = require("http");
 const { initSocketInstance } = require("./server/services/socket.service");
 // IMPORTAR LOS ROUTERS AQUI
 const usersRouter = require("./server/routes/users.router");
+const eventRouter = require("./server/routes/events.router");
 
 const PORT = 5050;
 
@@ -18,6 +19,7 @@ app.use(express.json());
 // Rutas (COLOCAR AQUI LOS ROUTERS)
 // app.use("/", myRouter);
 app.use("/", usersRouter);
+app.use("/", eventRouter);
 
 // Services
 initSocketInstance(httpServer);
