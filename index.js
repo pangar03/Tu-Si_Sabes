@@ -18,7 +18,8 @@ app.use(express.json());
 app.use(cors()); // Habilitar CORS para las solicitudes del frontend
 
 // Servir archivos estáticos
-app.use(express.static(path.join(__dirname, "host-app")));
+app.use("/host-app", express.static(path.join(__dirname, "host-app")));
+app.use("/organization-app", express.static(path.join(__dirname, "organization-app")));
 
 // Rutas API
 app.use("/", usersRouter);
