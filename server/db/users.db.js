@@ -2,6 +2,7 @@ let users = [
   {
     username: "admin",
     password: "12345",
+    isOrg: true,
   }
 ];
 
@@ -31,9 +32,16 @@ const login = (user) => {
       message: "El usuario no existe, comprueba que los datos sean correctos",
     };
   } else {
-    return query.password === user.password
-      ? { code: 200, message: "Se ha iniciado sesión" }
-      : { code: 400, message: "La contraseña es incorrecta" };
+    if(query.isOrg === user.organization) {
+      return query.password === user.password
+        ? { code: 200, message: "Se ha iniciado sesión" }
+        : { code: 400, message: "La contraseña es incorrecta" };
+    } else {
+      return {
+        code: 400,
+        message: "El usuario no coincide con el tipo de cuenta que intentas usar",
+      };
+    }
   }
 };
 
