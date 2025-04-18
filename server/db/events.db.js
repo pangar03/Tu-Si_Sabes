@@ -26,9 +26,19 @@ const changeStatus = async (id, status) => {
     return { code: 200, message: `Estado del evento actualizado a ${status} correctamente`, event };
 };
 
+const addSubstance = async (id, substance) => {
+    const event = events.find((event) => event.id === Number(id));
+    if (!event) {
+        return { code: 404, message: "Evento no encontrado" };
+    }
+    event.substances.push(substance);
+    return { code: 200, message: "Sustancia añadida correctamente", event };
+};
+
 module.exports = {
     getEvents,
     addEvent,
     getEventById,
     changeStatus,
+    addSubstance,
 };

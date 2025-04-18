@@ -1,4 +1,4 @@
-const { getEvents, addEvent, getEventById, changeStatus } = require('../db/events.db');
+const { getEvents, addEvent, getEventById, changeStatus, addSubstance } = require('../db/events.db');
 const { emitEvent } = require('../services/socket.service');
 
 const getEventsController = async (req, res) => {
@@ -38,9 +38,18 @@ const changeStatusController = async (req, res) => {
     return res.send(response);
 };
 
+const addSubstanceController = async (req, res) => {
+    const id = req.params.id;
+    const substance = req.body;
+    const response = await addSubstance(id, substance);
+    emitEvent("add-substance", response);
+    return res.send(response);
+};
+
 module.exports = {
     getEventsController,
     addEventController,
     getEventByIdController,
     changeStatusController,
+    addSubstanceController,
 }
