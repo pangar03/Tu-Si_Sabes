@@ -1,3 +1,5 @@
+import renderDashboard from "./screens/dashboard.js";
+import renderEventDetails from "./screens/eventDetails.js";
 import renderLogin from "./screens/login.js";
 
 const socket = io("/", { path: "/real-time" });
@@ -20,9 +22,11 @@ function renderCurrentRoute() {
         //     break;
         case "/dashboard":
             clearScripts();
+            renderDashboard(route.data);
             break;
         case "/event-details":
             clearScripts();
+            renderEventDetails(route.data);
             break;
         default:
             const app = document.getElementById("app");
