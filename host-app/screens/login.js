@@ -41,6 +41,7 @@ export default function renderLogin(data = {}) {
         const response = await makeRequest("/login", "POST", {
           username,
           password,
+          organization: false,
         });
 
         if (response.code === 200) {

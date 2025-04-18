@@ -67,7 +67,7 @@ export default function renderRegister(data = {}) {
           date,
           password,
           confirmPassword,
-          isHost: true,
+          isOrg: false,
         });
 
         if (response.code === 200) {
