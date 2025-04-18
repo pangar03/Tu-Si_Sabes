@@ -14,7 +14,8 @@ const addEventController = async (req, res) => {
     event.substances = [];
     const response = await addEvent(event);
 
-    res.send(response);
+    emitEvent("new-event", response.event);
+    return res.send(response);
 };
 
 const getEventByIdController = async (req, res) => {
@@ -34,7 +35,7 @@ const changeStatusController = async (req, res) => {
 
     const response = await changeStatus(id, status);
     emitEvent("change-status", response);
-    return res.send(response.message);
+    return res.send(response);
 };
 
 module.exports = {
