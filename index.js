@@ -6,6 +6,7 @@ const cors = require("cors"); // Es recomendable añadir CORS
 const { initSocketInstance } = require("./server/services/socket.service");
 const usersRouter = require("./server/routes/users.router");
 const eventRouter = require("./server/routes/events.router");
+const substanceRouter = require("./server/routes/substances.router");
 
 const PORT = 5050;
 
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, "host-app")));
 // Rutas API
 app.use("/", usersRouter);
 app.use("/", eventRouter);
+app.use("/", substanceRouter);
 
 // Services
 initSocketInstance(httpServer);
