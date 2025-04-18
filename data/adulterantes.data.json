@@ -1,0 +1,92 @@
+[
+    {
+        "id": "levamisole",
+        "nombre_comun": "Levamisol",
+        "nombre_quimico": "Levamisole hydrochloride",
+        "usos_comunes": ["Corte de cocaína"],
+        "sustancias_asociadas": ["cocaina"],
+        "frecuencia_aparicion": "alta",
+        "es_peligroso": true,
+        "riesgos": [
+            "Supresión del sistema inmunológico",
+            "Agranulocitosis (reducción de glóbulos blancos)",
+            "Lesiones cutáneas graves"
+        ],
+        "recomendaciones": [
+            "Evitar consumo si se detecta presencia de levamisol",
+            "Consultar médico si aparecen síntomas inmunológicos o lesiones en piel"
+        ]
+    },
+    {
+        "id": "fentanilo",
+        "nombre_comun": "Fentanilo",
+        "nombre_quimico": "Fentanyl",
+        "usos_comunes": ["Adulterante en opioides y estimulantes"],
+        "sustancias_asociadas": ["heroina", "cocaina", "metanfetamina"],
+        "frecuencia_aparicion": "media-alta",
+        "es_peligroso": true,
+        "riesgos": [
+            "Riesgo extremo de sobredosis incluso en microdosis",
+            "Depresión respiratoria severa",
+            "Inconsciencia súbita o muerte"
+        ],
+        "recomendaciones": [
+            "Tener siempre naloxona a mano si se sospecha consumo de opioides",
+            "No consumir solo",
+            "Usar tiras reactivas para detectar presencia de fentanilo"
+        ]
+    },
+    {
+        "id": "lidocaina",
+        "nombre_comun": "Lidocaína",
+        "nombre_quimico": "Lidocaine",
+        "usos_comunes": ["Corte de cocaína para simular adormecimiento"],
+        "sustancias_asociadas": ["cocaina"],
+        "frecuencia_aparicion": "alta",
+        "es_peligroso": false,
+        "riesgos": [
+            "Aumento de toxicidad si se mezcla con otros anestésicos",
+            "Irritación nasal o reacciones alérgicas"
+        ],
+        "recomendaciones": [
+            "No implica riesgo grave en pequeñas cantidades",
+            "Evitar acumulación de dosis",
+            "Atención a signos de alergia"
+        ]
+    },
+    {
+        "id": "cafeina",
+        "nombre_comun": "Cafeína",
+        "nombre_quimico": "Caffeine",
+        "usos_comunes": ["Corte en MDMA, anfetaminas o cocaína"],
+        "sustancias_asociadas": ["mdma", "anfetamina", "cocaina"],
+        "frecuencia_aparicion": "media",
+        "es_peligroso": false,
+        "riesgos": [
+            "Aumento de presión arterial y ritmo cardíaco",
+            "Insomnio o ansiedad si se mezcla con otros estimulantes"
+        ],
+        "recomendaciones": [
+            "Evitar redosificar otras sustancias estimulantes",
+            "Monitorear signos de sobreestimulación"
+        ]
+    },
+    {
+        "id": "borax",
+        "nombre_comun": "Bórax",
+        "nombre_quimico": "Sodium borate",
+        "usos_comunes": ["Corte de ketamina (falsificación)"],
+        "sustancias_asociadas": ["ketamina"],
+        "frecuencia_aparicion": "baja",
+        "es_peligroso": true,
+        "riesgos": [
+            "Toxicidad sistémica",
+            "Vómitos, diarrea, irritación del tracto digestivo",
+            "Riesgo de daño hepático o renal"
+        ],
+        "recomendaciones": [
+            "No consumir si se sospecha presencia de bórax",
+            "Buscar asistencia médica ante síntomas severos"
+        ]
+    }
+]

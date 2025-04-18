@@ -1,0 +1,108 @@
+[
+    {
+        "id": "mdma",
+        "nombre_comun": "MDMA",
+        "nombres_alternativos": ["Éxtasis", "M", "Molly"],
+        "dosis_recomendada_mg": {
+            "umbral": 40,
+            "ligera": 50,
+            "moderada": 75,
+            "fuerte": 125
+        },
+        "duracion": {
+            "inicio_minutos": "20-60",
+            "duracion_total_horas": "4-6"
+        },
+        "se_puede_redosificar": true,
+        "riesgos": [
+            "Riesgo de sobredosis si se redosifica en menos de 2 horas",
+            "Deshidratación",
+            "No mezclar con ISRS (antidepresivos)",
+            "Posible neurotoxicidad a dosis altas"
+        ],
+        "recomendaciones": [
+            "Tomar agua regularmente (pero sin excederse)",
+            "Evitar ambientes muy calurosos",
+            "Descansar entre bailes o actividad física",
+            "No redosificar antes de 2 horas"
+        ]
+    },
+    {
+        "id": "lsd",
+        "nombre_comun": "LSD",
+        "nombres_alternativos": ["Ácido", "Trip"],
+        "dosis_recomendada_ug": {
+            "ligera": 50,
+            "moderada": 100,
+            "fuerte": 150
+        },
+        "duracion": {
+            "inicio_minutos": "30-90",
+            "duracion_total_horas": "8-12"
+        },
+        "se_puede_redosificar": false,
+        "riesgos": [
+            "Ansiedad o mal viaje si se consume en mal estado emocional",
+            "Riesgo de accidentes por desorientación",
+            "No mezclar con alcohol o estimulantes"
+        ],
+        "recomendaciones": [
+            "Estar en un entorno seguro y con personas de confianza",
+            "Evitar espacios públicos o inseguros",
+            "Tener agua y snacks suaves disponibles",
+            "Evitar redosificar: no es efectivo y puede prolongar efectos incómodos"
+        ]
+    },
+    {
+        "id": "ketamina",
+        "nombre_comun": "Ketamina",
+        "nombres_alternativos": ["Keta", "Special K"],
+        "dosis_recomendada_mg": {
+            "baja": 30,
+            "moderada": 60,
+            "alta": 100
+        },
+        "duracion": {
+            "inicio_minutos": "5-15",
+            "duracion_total_horas": "1-2"
+        },
+        "se_puede_redosificar": true,
+        "riesgos": [
+            "Desorientación o caída si se consume de pie",
+            "Riesgo de entrar en un 'K-hole' a dosis altas",
+            "No mezclar con alcohol: riesgo alto de pérdida de conciencia"
+        ],
+        "recomendaciones": [
+            "Consumir sentado o en un lugar seguro",
+            "Evitar redosificar sin esperar al menos 1 hora",
+            "Hidratarse luego del uso",
+            "Tener acompañamiento si se consumen dosis altas"
+        ]
+    },
+    {
+        "id": "cocaina",
+        "nombre_comun": "Cocaína",
+        "nombres_alternativos": ["Perico", "Flaquita", "Coca"],
+        "dosis_recomendada_mg": {
+            "baja": 20,
+            "moderada": 50,
+            "alta": 100
+        },
+        "duracion": {
+            "inicio_minutos": "1-3",
+            "duracion_total_horas": "0.5-1"
+        },
+        "se_puede_redosificar": true,
+        "riesgos": [
+            "Riesgo alto de adulteración con sustancias peligrosas (levamisol, fentanilo)",
+            "Taquicardia, hipertensión",
+            "No mezclar con alcohol: puede crear cocaetileno (tóxico)"
+        ],
+        "recomendaciones": [
+            "Hacer pruebas de adulterantes antes de consumir",
+            "No redosificar compulsivamente",
+            "Hidratarse bien",
+            "Evitar mezclar con alcohol u otros estimulantes"
+        ]
+    }
+]
