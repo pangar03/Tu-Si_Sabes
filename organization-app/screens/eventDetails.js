@@ -37,7 +37,7 @@ export default function renderEventDetails(data = {}) {
             onSiteStatus(data);
             break;
         case "analizing":
-            navigateTo("/results-page", {data});
+            navigateTo("/results-page", data);
             break;
         default:
             break;
