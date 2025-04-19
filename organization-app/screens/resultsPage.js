@@ -44,7 +44,9 @@ export default async function renderResultsPage(data = {}){
                 <select id="adulterant" disabled>
                     <option value="">Seleccione un adulterante</option>
                     ${adulterants.map(adulterant => `<option value="${adulterant.id}">${adulterant.nombre_comun}</option>`).join("")}
+                    <option value="other">Sustancia no registrada</option>
                 </select>
+                <input type="text" id="adulterant-substance-other" placeholder="Ingrese el nombre de la sustancia hallada" style="display: none;"></input>
                 <textarea id="considerations" placeholder="Consideraciones adicionales"></textarea>
                 <button type="submit" id="submit-substance">Registrar Sustancia</button>
             </form>
@@ -65,9 +67,20 @@ export default async function renderResultsPage(data = {}){
         }
     });
 
+    const adulterantSelect = document.getElementById("adulterant");
+    const adulterantSubstanceOtherInput = document.getElementById("adulterant-substance-other");
+    adulterantSelect.addEventListener("change", () => {
+        if (adulterantSelect.value === "other") {
+            adulterantSubstanceOtherInput.style.display = "block";
+            adulterantSubstanceOtherInput.required = true;
+        } else {
+            adulterantSubstanceOtherInput.style.display = "none";
+            adulterantSubstanceOtherInput.required = false;
+        }
+    });
+
     // Habilitar/Deshabilitar el select de adulterantes al inicio
     const adulterantPresence = document.getElementById("adulterant-presence");
-    const adulterantSelect = document.getElementById("adulterant");
     adulterantPresence.addEventListener("change", () => {
         if (adulterantPresence.checked) {
             adulterantSelect.disabled = false;
@@ -82,9 +95,10 @@ export default async function renderResultsPage(data = {}){
         e.preventDefault();
         const reportedSubstance = document.getElementById("reported-substance").value;
         let primarySubstance = document.getElementById("primary-substance").value;
-        primarySubstance === "other" ? primarySubstance = document.getElementById("primary-substance-other").value : primarySubstance;
+        primarySubstance = primarySubstance === "other" ? primarySubstanceOtherInput.value : primarySubstance;
         const adulterantPresenceValue = document.getElementById("adulterant-presence").checked;
-        const adulterant = document.getElementById("adulterant").value;
+        let adulterant = document.getElementById("adulterant").value;
+        adulterant = adulterant === "other" ? adulterantSubstanceOtherInput.value : adulterant;
         const considerations = document.getElementById("considerations").value;
 
         const response = await makeRequest(`/event/${data.event.id}/substance`, "POST", {
@@ -96,6 +110,12 @@ export default async function renderResultsPage(data = {}){
             adulterant: adulterant,
             considerations: considerations
         });
+
+        if(data.event.status !== "results"){
+            const response = await makeRequest(`/event/${data.event.id}/change-status`, "POST", {
+                status: "results"
+            });
+        }
     });
 
     // Renderizar la lista de las sustancias añadidas

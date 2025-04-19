@@ -6,7 +6,7 @@ const getSubstancesController = (req, res) => {
     if(id){
         const substance = getSubstanceById(id);
         if(substance.code !== 200) {
-            return res.send(substance.message);
+            return res.send(substance);
         } else {
             return res.send(substance);
         }
@@ -22,7 +22,7 @@ const getAdulterantsController = (req, res) => {
     if(id){
         const adulterant = getAdulterantById(id);
         if(adulterant.code !== 200) {
-            return res.send(adulterant.message);
+            return res.send(adulterant);
         } else {
             return res.send(adulterant);
         }

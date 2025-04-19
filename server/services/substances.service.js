@@ -16,9 +16,14 @@ function getAllSubstances() {
 };
 
 function getSubstanceById(id) {
-    const substance = substanceData.find((substance) => substance.id === id);
+    let substance = substanceData.find((substance) => substance.id === id);
     if (!substance) {
-        return { code: 404, message: "No se ha encontrado la sustancia" };
+        substance = adulterantData.find((adulterant) => adulterant.id === id);
+        if(!substance) {
+            return { code: 404, message: "No se ha encontrado la sustancia ni el adulterante", substance: null };
+        } else {
+            return { code: 200, substance, message: "La sustancia se encontró exitosamente" };
+        }
     } else {
         return { code: 200, substance, message: "La sustancia se encontró exitosamente" };
     }
@@ -27,7 +32,7 @@ function getSubstanceById(id) {
 function getAdulterantById(id) {
     const adulterant = adulterantData.find((adulterant) => adulterant.id === id);
     if (!adulterant) {
-        return { code: 404, message: "No se ha encontrado el adulterante" };
+        return { code: 404, message: "No se ha encontrado el adulterante", adulterant: null };
     } else {
         return { code: 200, adulterant, message: "El adulterante se encontró exitosamente" };
     }

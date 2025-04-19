@@ -1,4 +1,4 @@
-import { socket } from "../app.js";
+import { navigateTo, socket } from "../app.js";
 
 export default function renderEventDetails(data = {}) {
     socket.on("change-status", (data) => {
@@ -34,7 +34,7 @@ export default function renderEventDetails(data = {}) {
             renderAnalizing();
             break;
         case "results":
-            alert("Resultados disponibles");
+            navigateTo("/results", {...data, event: data.event});
             break;
         default:
             break;
