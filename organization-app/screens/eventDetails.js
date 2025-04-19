@@ -1,7 +1,6 @@
 import { makeRequest, navigateTo, socket } from "../app.js";
 
 export default function renderEventDetails(data = {}) {
-    console.log("DATA", data);
     socket.on("change-status", (res) => {
         renderEventDetails({...data, event: res.event});
     });
@@ -20,8 +19,6 @@ export default function renderEventDetails(data = {}) {
         </div>
         <div id="event-details-buttons"></div>
     `;
-
-    // console.log("DATA", data);
     
     switch(data.event.status) {
         case "pending":

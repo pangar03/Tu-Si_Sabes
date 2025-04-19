@@ -9,9 +9,6 @@ export default async function renderResultsPage(data = {}){
     const substances = substancesData.substances;
     const adulterants = adulterantsData.adulterants;
 
-    console.log("SUBSTANCES", substances);
-    console.log("ADULTERANTS", adulterants);
-
     socket.on("add-substance", (res) => {
         renderResultsPage({...data, event: res.event});
     });
