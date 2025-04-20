@@ -8,8 +8,8 @@ export default function renderSearchReport(data = {}) {
 
   app.innerHTML = `
         <div class="search-container">
+            <h2>Acceso a Informes de Análisis</h2>
             <form id="search-form" class="search-form">
-                <h2>Acceso a Informes de Análisis</h2>
                 <div class="form-group">
                     <label for="report-id">ID del Informe:</label>
                     <input type="text" id="report-id" name="report-id" placeholder="Ingrese el ID del informe" value="${initialReportId}" required>
@@ -22,10 +22,10 @@ export default function renderSearchReport(data = {}) {
                 }">
                     ${data.message || ""}
                 </p>
-                <div class="nav-buttons">
-                    <button id="back-btn" class="btn btn-secondary">Volver al inicio</button>
-                </div>
             </form>
+            <div class="nav-buttons">
+                <button id="back-btn" class="btn btn-secondary">Volver al inicio</button>
+            </div>
         </div>
     `;
 
