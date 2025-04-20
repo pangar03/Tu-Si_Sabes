@@ -19,7 +19,19 @@ app.use(cors()); // Habilitar CORS para las solicitudes del frontend
 
 // Servir archivos estáticos
 app.use("/host-app", express.static(path.join(__dirname, "host-app")));
-app.use("/organization-app", express.static(path.join(__dirname, "organization-app")));
+app.use(
+  "/organization-app",
+  express.static(path.join(__dirname, "organization-app"))
+);
+app.use(
+  "/report-access",
+  express.static(path.join(__dirname, "report-access"))
+);
+
+// Ruta raíz para redirigir a la aplicación de acceso a informes
+app.get("/", (req, res) => {
+  res.redirect("/report-access");
+});
 
 // Rutas API
 app.use("/", usersRouter);
@@ -30,5 +42,5 @@ app.use("/", substanceRouter);
 initSocketInstance(httpServer);
 
 httpServer.listen(PORT, () =>
-    console.log(`Server running at http://localhost:${PORT}`)
+  console.log(`Server running at http://localhost:${PORT}`)
 );
