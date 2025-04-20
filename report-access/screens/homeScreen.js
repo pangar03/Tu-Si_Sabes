@@ -14,15 +14,8 @@ export default function renderHomeScreen(data = {}) {
         <button id="organizador-btn" class="role-btn">Organizador</button>
       </div>
       
-      <div class="report-access">
-        <h3>Ingresar un código de reporte</h3>
-        <div class="report-form">
-          <input type="text" id="report-id" placeholder="ID del reporte" class="report-input">
-          <button id="access-report-btn" class="report-btn">Ir al informe</button>
-        </div>
-        <p id="report-message" class="message ${data.messageType || ""}">
-          ${data.message || ""}
-        </p>
+      <div class="report-access-link">
+        <a href="#" id="search-report-link">Buscar un reporte por ID</a>
       </div>
     </div>
   `;
@@ -41,19 +34,11 @@ export default function renderHomeScreen(data = {}) {
       window.location.href = "/organization-app";
     });
 
-  // Evento para acceder a un reporte específico
+  // Evento para ir a la pantalla de búsqueda de reportes
   document
-    .getElementById("access-report-btn")
-    .addEventListener("click", async function () {
-      const reportId = document.getElementById("report-id").value.trim();
-
-      if (!reportId) {
-        document.getElementById("report-message").textContent =
-          "Por favor, ingresa un ID de reporte válido";
-        document.getElementById("report-message").className = "message error";
-        return;
-      }
-
-      navigateTo("/search-report", { reportId });
+    .getElementById("search-report-link")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      navigateTo("/search-report");
     });
 }
