@@ -1,3 +1,4 @@
+import renderHomeScreen from "./screens/homeScreen.js";
 import renderSearchReport from "./screens/searchReport.js";
 import renderReportView from "./screens/reportView.js";
 
@@ -12,6 +13,9 @@ let route = { path: "/", data: {} };
 function renderCurrentRoute() {
   switch (route.path) {
     case "/":
+      clearScripts();
+      renderHomeScreen(route.data);
+      break;
     case "/search-report":
       clearScripts();
       renderSearchReport(route.data);
