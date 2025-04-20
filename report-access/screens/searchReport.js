@@ -2,13 +2,17 @@ import { makeRequest, navigateTo } from "../app.js";
 
 export default function renderSearchReport(data = {}) {
   const app = document.getElementById("app");
+
+  // Si hay un reportId en los datos, intentar buscar automáticamente
+  const initialReportId = data.reportId || "";
+
   app.innerHTML = `
         <div class="search-container">
             <form id="search-form" class="search-form">
                 <h2>Acceso a Informes de Análisis</h2>
                 <div class="form-group">
                     <label for="report-id">ID del Informe:</label>
-                    <input type="text" id="report-id" name="report-id" placeholder="Ingrese el ID del informe" required>
+                    <input type="text" id="report-id" name="report-id" placeholder="Ingrese el ID del informe" value="${initialReportId}" required>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Buscar Informe</button>
@@ -18,13 +22,17 @@ export default function renderSearchReport(data = {}) {
                 }">
                     ${data.message || ""}
                 </p>
-                <div class="app-options">
-                    <a href="/host-app" class="app-option">Acceder como Anfitrión</a>
-                    <a href="/organization-app" class="app-option">Acceder como Organización</a>
+                <div class="nav-buttons">
+                    <button id="back-btn" class="btn btn-secondary">Volver al inicio</button>
                 </div>
             </form>
         </div>
     `;
+
+  // Agregar botón para volver a la pantalla de inicio
+  document.getElementById("back-btn").addEventListener("click", function () {
+    navigateTo("/");
+  });
 
   // Manejar el envío del formulario
   document
@@ -59,4 +67,9 @@ export default function renderSearchReport(data = {}) {
         document.getElementById("search-message").className = "message error";
       }
     });
+
+  // Si hay un ID de reporte inicial, realizar la búsqueda automáticamente
+  if (initialReportId) {
+    document.getElementById("search-form").dispatchEvent(new Event("submit"));
+  }
 }
