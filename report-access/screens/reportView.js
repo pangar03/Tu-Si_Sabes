@@ -25,12 +25,17 @@ export default async function renderReportView(data = {}) {
             </ul>
             <div class="nav-buttons">
                 <button id="back-btn" class="btn btn-secondary">Volver a la búsqueda</button>
+                <button id="home-btn" class="btn btn-secondary">Ir al inicio</button>
             </div>
         </div>
     `;
 
   document.getElementById("back-btn").addEventListener("click", function () {
     navigateTo("/search-report");
+  });
+
+  document.getElementById("home-btn").addEventListener("click", function () {
+    navigateTo("/");
   });
 
   // Si no hay sustancias analizadas o el evento no está en estado de resultados
