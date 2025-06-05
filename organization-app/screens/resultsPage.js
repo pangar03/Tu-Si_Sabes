@@ -11,8 +11,10 @@ export default async function renderResultsPage(data = {}) {
   // Remover listeners previos para evitar duplicados
   socket.off("add-substance");
 
+  // En lugar de re-renderizar toda la página, solo actualizar la lista de sustancias
   socket.on("add-substance", (res) => {
-    renderResultsPage({ ...data, event: res.event });
+    console.log("Nueva sustancia agregada:", res.event);
+    updateSubstanceList(res.event.substances);
   });
 
   const app = document.getElementById("app");
@@ -65,8 +67,44 @@ export default async function renderResultsPage(data = {}) {
                 <button type="submit" id="submit-substance">Registrar Sustancia</button>
             </form>
         </div>
-        <ul id="substance-list"></ul>
+        <div id="substance-list-container">
+            <h3>Sustancias registradas</h3>
+            <ul id="substance-list"></ul>
+        </div>
     `;
+
+  // Función para actualizar solo la lista de sustancias
+  function updateSubstanceList(substances) {
+    const substanceList = document.getElementById("substance-list");
+    if (!substanceList) return;
+
+    substanceList.innerHTML = "";
+
+    if (substances && substances.length > 0) {
+      substances.forEach((substance) => {
+        const substanceItem = document.createElement("li");
+        substanceItem.innerHTML = `
+                    <h4>Sustancia reportada como ${
+                      substance.reported_substance
+                    }</h4>
+                    <p>Sustancia primaria: ${substance.primary_substance}</p>
+                    <p>Adulterante: ${
+                      substance.adulterant ||
+                      "No se encontró adulterantes en la sustancia"
+                    }</p>
+                    <p>Consideraciones sugeridas: ${
+                      substance.considerations ||
+                      "No se sugirió ninguna consideración adicional"
+                    }</p>
+                `;
+        substanceList.appendChild(substanceItem);
+      });
+    } else {
+      const noSubstancesMessage = document.createElement("li");
+      noSubstancesMessage.innerHTML = `<p>No se han registrado sustancias aún.</p>`;
+      substanceList.appendChild(noSubstancesMessage);
+    }
+  }
 
   // Mostrar el input de "Sustancia no registrada" al seleccionar la opción
   const primarySubstanceSelect = document.getElementById("primary-substance");
@@ -104,6 +142,9 @@ export default async function renderResultsPage(data = {}) {
       adulterantSelect.disabled = false;
     } else {
       adulterantSelect.disabled = true;
+      adulterantSelect.value = "";
+      adulterantSubstanceOtherInput.style.display = "none";
+      adulterantSubstanceOtherInput.required = false;
     }
   });
 
@@ -154,49 +195,41 @@ export default async function renderResultsPage(data = {}) {
 
       console.log("Response from adding substance:", response);
 
-      // Cambiar el estado a "results" si no está ya en ese estado
-      if (data.event.status !== "results") {
-        const statusResponse = await makeRequest(
-          `/event/${eventId}/change-status`,
-          "POST",
-          {
-            status: "results",
+      if (response.code === 200) {
+        // Actualizar la data local del evento para mantener sincronización
+        data.event = response.event;
+
+        // Cambiar el estado a "results" si no está ya en ese estado
+        if (data.event.status !== "results") {
+          const statusResponse = await makeRequest(
+            `/event/${eventId}/change-status`,
+            "POST",
+            {
+              status: "results",
+            }
+          );
+          console.log("Response from status change:", statusResponse);
+          if (statusResponse.code === 200) {
+            data.event = statusResponse.event;
           }
-        );
-        console.log("Response from status change:", statusResponse);
-      }
-
-      // Limpiar el formulario después de enviar - con verificación de existencia
-      const formToReset = document.getElementById("substance-form");
-      if (formToReset) {
-        formToReset.reset();
-
-        // Resetear los campos adicionales manualmente
-        const primaryOtherInput = document.getElementById(
-          "primary-substance-other"
-        );
-        const adulterantOtherInput = document.getElementById(
-          "adulterant-substance-other"
-        );
-        const adulterantSelectElement = document.getElementById("adulterant");
-
-        if (primaryOtherInput) {
-          primaryOtherInput.style.display = "none";
-          primaryOtherInput.required = false;
         }
 
-        if (adulterantOtherInput) {
-          adulterantOtherInput.style.display = "none";
-          adulterantOtherInput.required = false;
-        }
+        // Limpiar el formulario después de enviar
+        resetForm();
 
-        if (adulterantSelectElement) {
-          adulterantSelectElement.disabled = true;
-        }
+        // Mostrar mensaje de éxito
+        showSuccessMessage("Sustancia registrada exitosamente");
+
+        // Actualizar la lista de sustancias localmente
+        updateSubstanceList(data.event.substances);
+      } else {
+        throw new Error(response.message || "Error al registrar la sustancia");
       }
     } catch (error) {
       console.error("Error processing substance:", error);
-      alert("Error al procesar la sustancia. Por favor, intente nuevamente.");
+      showErrorMessage(
+        "Error al procesar la sustancia. Por favor, intente nuevamente."
+      );
     } finally {
       // Rehabilitar el botón de envío
       if (submitButton) {
@@ -206,33 +239,99 @@ export default async function renderResultsPage(data = {}) {
     }
   });
 
-  // Renderizar la lista de las sustancias añadidas
-  const substanceList = document.getElementById("substance-list");
+  // Función para resetear el formulario
+  function resetForm() {
+    const formToReset = document.getElementById("substance-form");
+    if (formToReset) {
+      formToReset.reset();
 
-  // Verificar que existen sustancias antes de renderizarlas
-  if (data.event.substances && data.event.substances.length > 0) {
-    data.event.substances.forEach((substance) => {
-      const substanceItem = document.createElement("li");
-      substanceItem.innerHTML = `
-                <h4>Sustancia reportada como ${
-                  substance.reported_substance
-                }</h4>
-                <p>Sustancia primaria: ${substance.primary_substance}</p>
-                <p>Adulterante: ${
-                  substance.adulterant ||
-                  "No se encontró adulterantes en la sustancia"
-                }</p>
-                <p>Consideraciones sugeridas: ${
-                  substance.considerations ||
-                  "No se sugirió ninguna consideración adicional"
-                }</p>
-            `;
+      // Resetear los campos adicionales manualmente
+      const primaryOtherInput = document.getElementById(
+        "primary-substance-other"
+      );
+      const adulterantOtherInput = document.getElementById(
+        "adulterant-substance-other"
+      );
+      const adulterantSelectElement = document.getElementById("adulterant");
 
-      substanceList.appendChild(substanceItem);
-    });
-  } else {
-    const noSubstancesMessage = document.createElement("li");
-    noSubstancesMessage.innerHTML = `<p>No se han registrado sustancias aún.</p>`;
-    substanceList.appendChild(noSubstancesMessage);
+      if (primaryOtherInput) {
+        primaryOtherInput.style.display = "none";
+        primaryOtherInput.required = false;
+      }
+
+      if (adulterantOtherInput) {
+        adulterantOtherInput.style.display = "none";
+        adulterantOtherInput.required = false;
+      }
+
+      if (adulterantSelectElement) {
+        adulterantSelectElement.disabled = true;
+      }
+    }
   }
+
+  // Función para mostrar mensajes de éxito
+  function showSuccessMessage(message) {
+    const existingMessage = document.querySelector(".success-message");
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "success-message";
+    messageDiv.style.cssText = `
+      background-color: #d4edda;
+      color: #155724;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #c3e6cb;
+      border-radius: 4px;
+      font-weight: bold;
+    `;
+    messageDiv.textContent = message;
+
+    const form = document.getElementById("substance-form");
+    form.parentNode.insertBefore(messageDiv, form.nextSibling);
+
+    // Remover el mensaje después de 3 segundos
+    setTimeout(() => {
+      if (messageDiv.parentNode) {
+        messageDiv.remove();
+      }
+    }, 3000);
+  }
+
+  // Función para mostrar mensajes de error
+  function showErrorMessage(message) {
+    const existingMessage = document.querySelector(".error-message");
+    if (existingMessage) {
+      existingMessage.remove();
+    }
+
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "error-message";
+    messageDiv.style.cssText = `
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      font-weight: bold;
+    `;
+    messageDiv.textContent = message;
+
+    const form = document.getElementById("substance-form");
+    form.parentNode.insertBefore(messageDiv, form.nextSibling);
+
+    // Remover el mensaje después de 5 segundos
+    setTimeout(() => {
+      if (messageDiv.parentNode) {
+        messageDiv.remove();
+      }
+    }, 5000);
+  }
+
+  // Renderizar la lista inicial de sustancias
+  updateSubstanceList(data.event.substances);
 }
