@@ -15,7 +15,15 @@ export default function renderEventDetails(data = {}) {
         </div>
         <div id="event-details-body">
             <h3>Detalles del evento</h3>
-            <p>${data.event.eventDescription}</p>    
+            <p>${data.event.eventDescription}</p>
+            ${
+              data.event.substances && data.event.substances.length > 0
+                ? `<div id="substances-summary">
+                <h4>Sustancias registradas: ${data.event.substances.length}</h4>
+                <p>Se han registrado sustancias para este evento.</p>
+              </div>`
+                : ""
+            }    
         </div>
         <div id="event-details-buttons"></div>
     `;
@@ -34,7 +42,10 @@ export default function renderEventDetails(data = {}) {
       onSiteStatus(data);
       break;
     case "analizing":
-      navigateTo("/results-page", data);
+      analyzingStatus(data);
+      break;
+    case "results":
+      resultsStatus(data);
       break;
     default:
       break;
@@ -50,7 +61,6 @@ async function pendingStatus(data) {
   document
     .getElementById("confirm-event")
     .addEventListener("click", async () => {
-      // CAMBIO: Usar data.event.id en lugar de data.event.eventId
       const response = await makeRequest(
         `/event/${data.event.id}/change-status`,
         "POST",
@@ -72,7 +82,6 @@ async function confirmedStatus(data) {
   document
     .getElementById("on-transit-event")
     .addEventListener("click", async () => {
-      // CAMBIO: Usar data.event.id en lugar de data.event.eventId
       const response = await makeRequest(
         `/event/${data.event.id}/change-status`,
         "POST",
@@ -87,7 +96,6 @@ async function confirmedStatus(data) {
   document
     .getElementById("on-site-event")
     .addEventListener("click", async () => {
-      // CAMBIO: Usar data.event.id en lugar de data.event.eventId
       const response = await makeRequest(
         `/event/${data.event.id}/change-status`,
         "POST",
@@ -109,7 +117,6 @@ async function onSiteStatus(data) {
   document
     .getElementById("analizing-event")
     .addEventListener("click", async () => {
-      // CAMBIO: Usar data.event.id en lugar de data.event.eventId
       const response = await makeRequest(
         `/event/${data.event.id}/change-status`,
         "POST",
@@ -119,5 +126,52 @@ async function onSiteStatus(data) {
       );
       alert("Empezando análisis de sustancias evento");
       console.log("Response from analizing:", response);
+    });
+}
+
+// Nueva función para el estado "analizing"
+async function analyzingStatus(data) {
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
+        <button class="btn btn-primary" id="continue-analysis">Continuar con análisis</button>
+    `;
+
+  document.getElementById("continue-analysis").addEventListener("click", () => {
+    navigateTo("/results-page", data);
+  });
+}
+
+// Nueva función para el estado "results" - permite seguir agregando sustancias
+async function resultsStatus(data) {
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
+        <button class="btn btn-primary" id="continue-adding-substances">Continuar agregando sustancias</button>
+        <button class="btn btn-secondary" id="finish-analysis">Finalizar análisis</button>
+    `;
+
+  document
+    .getElementById("continue-adding-substances")
+    .addEventListener("click", () => {
+      navigateTo("/results-page", data);
+    });
+
+  document
+    .getElementById("finish-analysis")
+    .addEventListener("click", async () => {
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "completed",
+        }
+      );
+      if (response.code === 200) {
+        alert("Análisis finalizado exitosamente");
+        // Opcional: regresar al dashboard
+        navigateTo("/dashboard", data);
+      } else {
+        alert("Error al finalizar el análisis");
+      }
+      console.log("Response from finish analysis:", response);
     });
 }
