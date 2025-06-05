@@ -22,15 +22,26 @@ const getEvents = async () => {
     }
 
     // Transformar datos para mantener compatibilidad con el frontend
-    const transformedEvents = data.map((event) => ({
-      id: event.id,
-      status: event.status,
-      createdAt: new Date(event.created_at).toLocaleString("es-CO", {
-        timeZone: "America/Bogota",
-      }),
-      substances: event.event_substances.map((sub) => sub.substance_data),
-      ...event.event_data, // Agregar cualquier dato adicional del evento
-    }));
+    const transformedEvents = data.map((event) => {
+      const { event_data, ...eventFields } = event;
+
+      return {
+        id: eventFields.id, // ID real de la base de datos
+        status: eventFields.status,
+        createdAt: new Date(eventFields.created_at).toLocaleString("es-CO", {
+          timeZone: "America/Bogota",
+        }),
+        substances: eventFields.event_substances.map(
+          (sub) => sub.substance_data
+        ),
+        // Agregar datos del evento pero preservando el ID correcto
+        ...event_data,
+        // Asegurar que el ID real no sea sobrescrito
+        id: eventFields.id,
+        // Mantener el reportId como un campo separado si existe en event_data
+        reportId: event_data?.id || event_data?.eventId,
+      };
+    });
 
     return transformedEvents;
   } catch (error) {
@@ -65,13 +76,18 @@ const addEvent = async (event) => {
 
     // Transformar para mantener compatibilidad
     const transformedEvent = {
-      id: data.id,
+      id: data.id, // ID real de la base de datos
       status: data.status,
       createdAt: new Date(data.created_at).toLocaleString("es-CO", {
         timeZone: "America/Bogota",
       }),
       substances: [],
+      // Agregar datos del evento pero preservando el ID correcto
       ...data.event_data,
+      // Asegurar que el ID real no sea sobrescrito
+      id: data.id,
+      // Mantener el reportId como un campo separado si existe
+      reportId: data.event_data?.id || data.event_data?.eventId,
     };
 
     return {
@@ -118,14 +134,21 @@ const getEventById = async (id) => {
     }
 
     // Transformar datos para mantener compatibilidad
+    const { event_data, ...eventFields } = data;
+
     const transformedEvent = {
-      id: data.id,
-      status: data.status,
-      createdAt: new Date(data.created_at).toLocaleString("es-CO", {
+      id: eventFields.id, // ID real de la base de datos
+      status: eventFields.status,
+      createdAt: new Date(eventFields.created_at).toLocaleString("es-CO", {
         timeZone: "America/Bogota",
       }),
-      substances: data.event_substances.map((sub) => sub.substance_data),
-      ...data.event_data,
+      substances: eventFields.event_substances.map((sub) => sub.substance_data),
+      // Agregar datos del evento pero preservando el ID correcto
+      ...event_data,
+      // Asegurar que el ID real no sea sobrescrito
+      id: eventFields.id,
+      // Mantener el reportId como un campo separado si existe
+      reportId: event_data?.id || event_data?.eventId,
     };
 
     return {
