@@ -173,18 +173,31 @@ const getEventById = async (id) => {
 
 const changeStatus = async (id, status) => {
   try {
-    // Primero obtener el evento actual para mantener los datos
-    const currentEvent = await getEventById(id);
-    if (currentEvent.code !== 200) {
-      return currentEvent;
+    // Primero obtener el evento ORIGINAL directamente de la base de datos
+    const { data: originalEvent, error: fetchError } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (fetchError) {
+      if (fetchError.code === "PGRST116") {
+        return { code: 404, message: "Evento no encontrado" };
+      }
+      console.error("Error fetching original event:", fetchError);
+      return {
+        code: 500,
+        message: "Error interno del servidor",
+      };
     }
 
-    // Actualizar tanto el estado principal como el estado en event_data
+    // Actualizar el status dentro de event_data preservando todos los demás datos
     const updatedEventData = {
-      ...(currentEvent.event.event_data || {}),
-      status: status,
+      ...originalEvent.event_data, // Mantener todos los datos originales
+      status: status, // Solo actualizar el status
     };
 
+    // Actualizar tanto el estado principal como el estado en event_data
     const { data, error } = await supabase
       .from("events")
       .update({
@@ -197,7 +210,6 @@ const changeStatus = async (id, status) => {
 
     if (error) {
       if (error.code === "PGRST116") {
-        // No rows found
         return { code: 404, message: "Evento no encontrado" };
       }
       console.error("Error updating status:", error);
@@ -207,7 +219,7 @@ const changeStatus = async (id, status) => {
       };
     }
 
-    // Obtener el evento completo con sustancias
+    // Obtener el evento completo con sustancias usando la función existente
     const eventWithSubstances = await getEventById(id);
 
     return {
