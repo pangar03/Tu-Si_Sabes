@@ -27,17 +27,18 @@ const getEvents = async () => {
 
       return {
         id: eventFields.id, // ID real de la base de datos
-        status: eventFields.status,
+        status: eventFields.status, // Estado actual del evento
         createdAt: new Date(eventFields.created_at).toLocaleString("es-CO", {
           timeZone: "America/Bogota",
         }),
         substances: eventFields.event_substances.map(
           (sub) => sub.substance_data
         ),
-        // Agregar datos del evento pero preservando el ID correcto
+        // Agregar datos del evento pero preservando el ID y estado correctos
         ...event_data,
-        // Asegurar que el ID real no sea sobrescrito
+        // Asegurar que el ID y estado reales no sean sobrescritos
         id: eventFields.id,
+        status: eventFields.status,
         // Mantener el reportId como un campo separado si existe en event_data
         reportId: event_data?.id || event_data?.eventId,
       };
@@ -55,11 +56,14 @@ const addEvent = async (event) => {
     // Separar las sustancias del evento principal
     const { substances, ...eventData } = event;
 
+    // Asegurar que el estado en event_data coincida con el estado principal
+    eventData.status = eventData.status || "pending";
+
     const { data, error } = await supabase
       .from("events")
       .insert([
         {
-          status: eventData.status || "pending",
+          status: eventData.status,
           event_data: eventData,
         },
       ])
@@ -82,10 +86,11 @@ const addEvent = async (event) => {
         timeZone: "America/Bogota",
       }),
       substances: [],
-      // Agregar datos del evento pero preservando el ID correcto
+      // Agregar datos del evento pero preservando el ID y estado correctos
       ...data.event_data,
-      // Asegurar que el ID real no sea sobrescrito
+      // Asegurar que el ID y estado reales no sean sobrescritos
       id: data.id,
+      status: data.status,
       // Mantener el reportId como un campo separado si existe
       reportId: data.event_data?.id || data.event_data?.eventId,
     };
@@ -138,15 +143,16 @@ const getEventById = async (id) => {
 
     const transformedEvent = {
       id: eventFields.id, // ID real de la base de datos
-      status: eventFields.status,
+      status: eventFields.status, // Estado actual del evento
       createdAt: new Date(eventFields.created_at).toLocaleString("es-CO", {
         timeZone: "America/Bogota",
       }),
       substances: eventFields.event_substances.map((sub) => sub.substance_data),
-      // Agregar datos del evento pero preservando el ID correcto
+      // Agregar datos del evento pero preservando el ID y estado correctos
       ...event_data,
-      // Asegurar que el ID real no sea sobrescrito
+      // Asegurar que el ID y estado reales no sean sobrescritos
       id: eventFields.id,
+      status: eventFields.status,
       // Mantener el reportId como un campo separado si existe
       reportId: event_data?.id || event_data?.eventId,
     };
@@ -167,9 +173,24 @@ const getEventById = async (id) => {
 
 const changeStatus = async (id, status) => {
   try {
+    // Primero obtener el evento actual para mantener los datos
+    const currentEvent = await getEventById(id);
+    if (currentEvent.code !== 200) {
+      return currentEvent;
+    }
+
+    // Actualizar tanto el estado principal como el estado en event_data
+    const updatedEventData = {
+      ...(currentEvent.event.event_data || {}),
+      status: status,
+    };
+
     const { data, error } = await supabase
       .from("events")
-      .update({ status })
+      .update({
+        status: status,
+        event_data: updatedEventData,
+      })
       .eq("id", id)
       .select()
       .single();
