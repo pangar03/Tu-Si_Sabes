@@ -8,6 +8,9 @@ export default async function renderResultsPage(data = {}) {
   const substances = substancesData.substances;
   const adulterants = adulterantsData.adulterants;
 
+  // Remover listeners previos para evitar duplicados
+  socket.off("add-substance");
+
   socket.on("add-substance", (res) => {
     renderResultsPage({ ...data, event: res.event });
   });
@@ -127,38 +130,80 @@ export default async function renderResultsPage(data = {}) {
       adulterant === "other" ? adulterantSubstanceOtherInput.value : adulterant;
     const considerations = document.getElementById("considerations").value;
 
-    // Agregar la sustancia al evento
-    const response = await makeRequest(`/event/${eventId}/substance`, "POST", {
-      id: Date.now(),
-      eventId: eventId,
-      reported_substance: reportedSubstance,
-      primary_substance: primarySubstance,
-      adulterant_presence: adulterantPresenceValue,
-      adulterant: adulterant,
-      considerations: considerations,
-    });
+    // Deshabilitar el botón de envío para evitar envíos múltiples
+    const submitButton = document.getElementById("submit-substance");
+    const originalButtonText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = "Registrando...";
 
-    console.log("Response from adding substance:", response);
-
-    // Cambiar el estado a "results" si no está ya en ese estado
-    if (data.event.status !== "results") {
-      const statusResponse = await makeRequest(
-        `/event/${eventId}/change-status`,
+    try {
+      // Agregar la sustancia al evento
+      const response = await makeRequest(
+        `/event/${eventId}/substance`,
         "POST",
         {
-          status: "results",
+          id: Date.now(),
+          eventId: eventId,
+          reported_substance: reportedSubstance,
+          primary_substance: primarySubstance,
+          adulterant_presence: adulterantPresenceValue,
+          adulterant: adulterant,
+          considerations: considerations,
         }
       );
-      console.log("Response from status change:", statusResponse);
-    }
 
-    // Limpiar el formulario después de enviar
-    document.getElementById("substance-form").reset();
-    primarySubstanceOtherInput.style.display = "none";
-    adulterantSubstanceOtherInput.style.display = "none";
-    adulterantSelect.disabled = true;
-    primarySubstanceOtherInput.required = false;
-    adulterantSubstanceOtherInput.required = false;
+      console.log("Response from adding substance:", response);
+
+      // Cambiar el estado a "results" si no está ya en ese estado
+      if (data.event.status !== "results") {
+        const statusResponse = await makeRequest(
+          `/event/${eventId}/change-status`,
+          "POST",
+          {
+            status: "results",
+          }
+        );
+        console.log("Response from status change:", statusResponse);
+      }
+
+      // Limpiar el formulario después de enviar - con verificación de existencia
+      const formToReset = document.getElementById("substance-form");
+      if (formToReset) {
+        formToReset.reset();
+
+        // Resetear los campos adicionales manualmente
+        const primaryOtherInput = document.getElementById(
+          "primary-substance-other"
+        );
+        const adulterantOtherInput = document.getElementById(
+          "adulterant-substance-other"
+        );
+        const adulterantSelectElement = document.getElementById("adulterant");
+
+        if (primaryOtherInput) {
+          primaryOtherInput.style.display = "none";
+          primaryOtherInput.required = false;
+        }
+
+        if (adulterantOtherInput) {
+          adulterantOtherInput.style.display = "none";
+          adulterantOtherInput.required = false;
+        }
+
+        if (adulterantSelectElement) {
+          adulterantSelectElement.disabled = true;
+        }
+      }
+    } catch (error) {
+      console.error("Error processing substance:", error);
+      alert("Error al procesar la sustancia. Por favor, intente nuevamente.");
+    } finally {
+      // Rehabilitar el botón de envío
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+      }
+    }
   });
 
   // Renderizar la lista de las sustancias añadidas
