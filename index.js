@@ -1,14 +1,16 @@
+require("dotenv").config(); // Cargar variables de entorno
+
 const express = require("express");
 const path = require("path");
 const { createServer } = require("http");
-const cors = require("cors"); // Es recomendable añadir CORS
+const cors = require("cors");
 
 const { initSocketInstance } = require("./server/services/socket.service");
 const usersRouter = require("./server/routes/users.router");
 const eventRouter = require("./server/routes/events.router");
 const substanceRouter = require("./server/routes/substances.router");
 
-const PORT = 5050;
+const PORT = process.env.PORT || 5050;
 
 const app = express();
 const httpServer = createServer(app);
@@ -37,6 +39,11 @@ app.get("/", (req, res) => {
 app.use("/", usersRouter);
 app.use("/", eventRouter);
 app.use("/", substanceRouter);
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", timestamp: new Date().toISOString() });
+});
 
 // Services
 initSocketInstance(httpServer);
