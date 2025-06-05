@@ -1,12 +1,12 @@
 import { makeRequest, navigateTo, socket } from "../app.js";
 
 export default function renderEventDetails(data = {}) {
-    socket.on("change-status", (res) => {
-        renderEventDetails({...data, event: res.event});
-    });
-    
-    const app = document.getElementById("app");
-    app.innerHTML = `
+  socket.on("change-status", (res) => {
+    renderEventDetails({ ...data, event: res.event });
+  });
+
+  const app = document.getElementById("app");
+  app.innerHTML = `
         <div id="event-details-header">
             <h2>${data.event.eventName}</h2>
             <p>Inicio: ${data.event.eventStartDate}</p>    
@@ -19,73 +19,105 @@ export default function renderEventDetails(data = {}) {
         </div>
         <div id="event-details-buttons"></div>
     `;
-    
-    switch(data.event.status) {
-        case "pending":
-            pendingStatus(data);
-            break;
-        case "confirmed":
-            confirmedStatus(data);
-            break;
-        case "on-transit":
-            confirmedStatus(data);
-            break;
-        case "on-site":
-            onSiteStatus(data);
-            break;
-        case "analizing":
-            navigateTo("/results-page", data);
-            break;
-        default:
-            break;
-    }
-};
+
+  switch (data.event.status) {
+    case "pending":
+      pendingStatus(data);
+      break;
+    case "confirmed":
+      confirmedStatus(data);
+      break;
+    case "on-transit":
+      confirmedStatus(data);
+      break;
+    case "on-site":
+      onSiteStatus(data);
+      break;
+    case "analizing":
+      navigateTo("/results-page", data);
+      break;
+    default:
+      break;
+  }
+}
 
 async function pendingStatus(data) {
-    const container = document.getElementById("event-details-buttons");
-    container.innerHTML = `
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
         <button class="btn btn-primary" id="confirm-event">Confirmar Evento</button>
     `;
 
-    document.getElementById("confirm-event").addEventListener("click", async () => {
-        const response = await makeRequest(`/event/${data.event.id}/change-status`, "POST", {
-            status: "confirmed"
-        });
+  document
+    .getElementById("confirm-event")
+    .addEventListener("click", async () => {
+      // CAMBIO: Usar data.event.id en lugar de data.event.eventId
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "confirmed",
+        }
+      );
+      console.log("Response from confirm event:", response);
     });
-};
+}
 
 async function confirmedStatus(data) {
-    const container = document.getElementById("event-details-buttons");
-    container.innerHTML = `
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
         <button class="btn btn-primary" id="on-transit-event">Ir al lugar</button>
         <button class="btn btn-primary" id="on-site-event">Anunciar llegada</button>
     `;
-    
-    document.getElementById("on-transit-event").addEventListener("click", async () => {
-        const response = await makeRequest(`/event/${data.event.id}/change-status`, "POST", {
-            status: "on-transit"
-        });
-        alert("Anunciando salida hacia el lugar del evento");
+
+  document
+    .getElementById("on-transit-event")
+    .addEventListener("click", async () => {
+      // CAMBIO: Usar data.event.id en lugar de data.event.eventId
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "on-transit",
+        }
+      );
+      alert("Anunciando salida hacia el lugar del evento");
+      console.log("Response from on-transit:", response);
     });
 
-    document.getElementById("on-site-event").addEventListener("click", async () => {
-        const response = await makeRequest(`/event/${data.event.id}/change-status`, "POST", {
-            status: "on-site"
-        });
-        alert("Anunciando llegada al lugar del evento");
+  document
+    .getElementById("on-site-event")
+    .addEventListener("click", async () => {
+      // CAMBIO: Usar data.event.id en lugar de data.event.eventId
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "on-site",
+        }
+      );
+      alert("Anunciando llegada al lugar del evento");
+      console.log("Response from on-site:", response);
     });
-};
+}
 
 async function onSiteStatus(data) {
-    const container = document.getElementById("event-details-buttons");
-    container.innerHTML = `
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
         <button class="btn btn-primary" id="analizing-event">Empezar análisis</button>
     `;
 
-    document.getElementById("analizing-event").addEventListener("click", async () => {
-        const response = await makeRequest(`/event/${data.event.id}/change-status`, "POST", {
-            status: "analizing"
-        });
-        alert("Empezando análisis de sustancias evento");
+  document
+    .getElementById("analizing-event")
+    .addEventListener("click", async () => {
+      // CAMBIO: Usar data.event.id en lugar de data.event.eventId
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "analizing",
+        }
+      );
+      alert("Empezando análisis de sustancias evento");
+      console.log("Response from analizing:", response);
     });
-};
+}
