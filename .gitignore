@@ -1,2 +1,8 @@
 node_modules
 request.http
+.env
+.env.local
+.env.production
+.env.staging
+*.log
+.DS_Store
