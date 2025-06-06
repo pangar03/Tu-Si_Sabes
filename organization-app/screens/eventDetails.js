@@ -47,6 +47,9 @@ export default function renderEventDetails(data = {}) {
     case "results":
       resultsStatus(data);
       break;
+    case "completed":
+      completedStatus(data);
+      break;
     default:
       break;
   }
@@ -174,4 +177,34 @@ async function resultsStatus(data) {
       }
       console.log("Response from finish analysis:", response);
     });
+}
+
+// Nueva función para el estado "completed" - permite ver la información pero no editar
+async function completedStatus(data) {
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
+        <div id="completed-status-info">
+            <h4 style="color: #28a745; margin-bottom: 10px;">✓ Evento Completado</h4>
+            <p style="margin-bottom: 15px;">Este evento ha sido finalizado exitosamente. Toda la información está disponible para consulta.</p>
+            ${
+              data.event.substances && data.event.substances.length > 0
+                ? `<button class="btn btn-info" id="view-final-report">Ver Informe Final</button>`
+                : ""
+            }
+            <button class="btn btn-secondary" id="back-to-dashboard">Volver al Dashboard</button>
+        </div>
+    `;
+
+  // Agregar funcionalidad para ver el informe final
+  const viewReportButton = document.getElementById("view-final-report");
+  if (viewReportButton) {
+    viewReportButton.addEventListener("click", () => {
+      navigateTo("/results-page", { ...data, readOnly: true });
+    });
+  }
+
+  // Agregar funcionalidad para volver al dashboard
+  document.getElementById("back-to-dashboard").addEventListener("click", () => {
+    navigateTo("/dashboard", data);
+  });
 }
