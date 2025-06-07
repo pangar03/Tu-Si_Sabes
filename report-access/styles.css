@@ -31,6 +31,21 @@
   overflow: hidden;
 }
 
+.espiral {
+  position: absolute;
+  width: 80%;
+  max-width: 600px;
+  height: auto;
+  bottom: -6%;
+  left: 70%;
+  transform: translateX(-50%);
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0; 
+  mix-blend-mode: lighten; 
+}
+
+
 .bolita {
   position: absolute;
   width: 600px; 
@@ -164,7 +179,7 @@
 
 @media (max-width: 480px) {
   .tusi-logo {
-    width: 220px;
+    width: 300px;
     margin-bottom: 2rem;
   }
 
@@ -173,7 +188,7 @@
   }
 
   .bolita {
-    width: 220px;
+    width: 300px;
   }
 
   .bolita-rosa {
@@ -200,4 +215,14 @@
   .report-access-link {
     margin-bottom: 0.8rem;
   }
+
+ 
+.espiral {
+    opacity: 0.5;
+    width: 80%;
+  
 }
+}
+
+
+/* --- Estilos para ReportView.js --- */

@@ -8,6 +8,8 @@ export default function renderHomeScreen(data = {}) {
 
     <img src="/report-access/assets/bolitarosa.svg" alt="Bolita Rosa" class="bolita bolita-rosa">
     <img src="/report-access/assets/bolitanegra.svg" alt="Bolita Negra" class="bolita bolita-negra">
+    <img src="/report-access/assets/espiral.svg" alt="espiral" class="espiral">
+
 
       <div class="logo-container">
       <img src="/report-access/assets/logoechele.svg" alt="Logo" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjZGRkIi8+Cjx0ZXh0IHg9Ijc1IiB5PSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzk5OSIgZm9udC1zaXplPSIxNCI+TG9nbzwvdGV4dD4KPC9zdmc+'; this.onerror=null;">      </div>
