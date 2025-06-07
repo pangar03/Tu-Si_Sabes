@@ -14,7 +14,6 @@
   margin: 0;
   padding: 0;
 }
-
 /* --- Estilos para HomeScreen.js --- */
 
 .home-container {
@@ -24,14 +23,42 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  height: 100vh;
+   justify-content: flex-start; 
+   height: 93.3vh;
   padding: 2rem 1rem;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bolita {
+  position: absolute;
+  width: 600px; 
+  height: auto;
+  pointer-events: none;
+  z-index: 0; 
+}
+
+.bolita-rosa {
+  opacity: .8;
+  top: -150px;
+  left: -150px;
+}
+
+.bolita-negra {
+  bottom: -70px;
+  right: -140px;
 }
 
 .logo-container {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 10rem;
+}
+
+.tusi-logo {
+  width: 500px;
+  height: auto;
+   margin-bottom: 6rem;
 }
 
 .logo {
@@ -44,7 +71,7 @@
   font-weight: bold;
   color: #fff;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  margin: 2rem 0;
+  margin: 1rem 0;
 }
 
 .role-buttons {
@@ -53,6 +80,8 @@
   gap: 1rem;
   width: 100%;
   max-width: 300px;
+   margin-bottom: 1.5rem;
+    margin-top: 2.5rem;
 }
 
 .role-btn {
@@ -74,7 +103,7 @@
 
 
 .report-access-link {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 #search-report-link {
@@ -83,9 +112,92 @@
   text-decoration: none;
   border-bottom: 2px solid #fff;
   padding-bottom: 0.2rem;
+  opacity: 0.4;
   transition: opacity 0.3s ease;
 }
 
 #search-report-link:hover {
   opacity: 0.8;
+}
+
+/* --- Responsive --- */
+
+@media (max-width: 768px) {
+  .tusi-logo {
+    width: 300px;
+    margin-bottom: 3rem;
+  }
+
+  .logo {
+    width: 60px;
+  }
+
+  .bolita {
+    width: 300px;
+  }
+
+  .bolita-rosa {
+    top: -100px;
+    left: -100px;
+  }
+
+  .bolita-negra {
+    bottom: -20px;
+    right: -100px;
+  }
+
+  .role-buttons {
+    max-width: 60%; 
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .role-btn {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .report-access-link {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tusi-logo {
+    width: 220px;
+    margin-bottom: 2rem;
+  }
+
+  .logo {
+    width: 50px;
+  }
+
+  .bolita {
+    width: 220px;
+  }
+
+  .bolita-rosa {
+    top: -80px;
+    left: -80px;
+  }
+
+  .bolita-negra {
+    bottom: -10px;
+    right: -80px;
+  }
+
+  .role-buttons {
+    max-width: 70%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .role-btn {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+  }
+
+  .report-access-link {
+    margin-bottom: 0.8rem;
+  }
 }
