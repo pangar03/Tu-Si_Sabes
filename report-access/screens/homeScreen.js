@@ -1,11 +1,12 @@
 import { navigateTo } from "../app.js";
 
 export default function renderHomeScreen(data = {}) {
+
   const app = document.getElementById("app");
   app.innerHTML = `
     <div class="home-container">
       <div class="logo-container">
-        <img src="assets/logo.png" alt="Logo" class="logo" onerror="this.src='/api/placeholder/150/150'; this.onerror=null;">
+        <img src="assets/logoechele.svg" alt="Logo" class="logo" onerror="this.src='/api/placeholder/150/150'; this.onerror=null;">
       </div>
       <h1>TÚ-sí sabes</h1>
       
