@@ -5,6 +5,10 @@ export default function renderHomeScreen(data = {}) {
   const app = document.getElementById("app");
   app.innerHTML = `
     <div class="home-container">
+    
+    <img src="assets/bolita20rosa.svg" alt="Bolita Rosa" class="bolita bolita-rosa">
+    <img src="assets/bolita20negra.svg" alt="Bolita Negra" class="bolita bolita-negra">
+
       <div class="logo-container">
         <img src="assets/logoechele.svg" alt="Logo" class="logo" onerror="this.src='/api/placeholder/150/150'; this.onerror=null;">
       </div>

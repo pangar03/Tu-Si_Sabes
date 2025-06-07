@@ -10,9 +10,17 @@
   border: 1px solid #c3e6cb;
 }
 
+*{
+  margin: 0;
+  padding: 0;
+}
+
 /* --- Estilos para HomeScreen.js --- */
 
 .home-container {
+  background: 
+    linear-gradient(173deg, rgba(0, 0, 6, 0.75) 7.66%, rgba(0, 0, 108, 0.10) 113.71%),
+    linear-gradient(174deg, #7BF809 8.18%, #CAFC9D 116.91%);
   display: flex;
   flex-direction: column;
   align-items: center;
