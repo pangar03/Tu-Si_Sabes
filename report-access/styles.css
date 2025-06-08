@@ -345,7 +345,7 @@
 }
 
 .search-bolita-negra {
-  bottom: -70px;
+  bottom: -7  0px;
   right: -140px;
 }
 
@@ -457,5 +457,167 @@
 
   .search-bolita {
     width: 360px;
+  }
+}
+
+/* --- ReportView --- */
+
+.report-container {
+  background: #fff;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  color: #111;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+#event-details-header {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#event-details-header h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+#event-details-header p {
+  margin: 0.2rem 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+#event-status {
+  font-weight: bold;
+}
+
+.status-badge.completed {
+  background-color: #7BF809;
+  color: #000;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.substance-card {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: #fff;
+}
+
+.substance-card-header h3 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.sub-id, .sub-detected {
+  margin: 0.2rem 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.substance-highlights {
+  background-color: #ffd6d6;
+  color: #a10000;
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  font-weight: bold;
+  text-align: center;
+}
+
+.substance-badges {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.badge {
+  background-color: #E645A4;
+  color: white;
+  border-radius: 12px;
+  padding: 0.8rem;
+  flex: 1;
+  margin: 0 0.5rem;
+  text-align: center;
+}
+
+.badge-title {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.badge-value {
+  font-size: 0.9rem;
+}
+
+.substance-risks, .substance-recomendations {
+  text-align: left;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+}
+
+.substance-risks h4,
+.substance-recomendations h4,
+.substance-considerations h4 {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.substance-risks li::before {
+  content: "⚠️ ";
+  margin-right: 0.5rem;
+}
+
+.substance-recomendations li::before {
+  content: "✅ ";
+  margin-right: 0.5rem;
+}
+
+.substance-risks li,
+.substance-recomendations li {
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+}
+
+.substance-considerations {
+  text-align: left;
+}
+
+.substance-considerations h4 {
+  margin-bottom: 0.5rem;
+}
+
+.substance-considerations p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .report-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .substance-badges {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .badge {
+    margin: 0;
   }
 }
