@@ -7,12 +7,6 @@
 
 /* --- Auth Container (Login/Register) --- */
 .auth-container {
-  background: linear-gradient(
-      173deg,
-      rgba(0, 0, 6, 0.75) 7.66%,
-      rgba(0, 0, 108, 0.1) 113.71%
-    ),
-    linear-gradient(174deg, #e645a4 8.18%, #7bf809 116.91%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -23,99 +17,266 @@
   overflow: hidden;
 }
 
-/* Background assets placeholders - Add your images here */
-.auth-container::before {
+/* Login Background */
+body:has(#login-form) .auth-container {
+  background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%);
+}
+
+/* Register Background */
+body:has(#register-form) .auth-container {
+  background: linear-gradient(135deg, #7bf809 0%, #62c607 100%);
+}
+
+/* Login Background Pattern */
+body:has(#login-form) .auth-container::before {
   content: "";
   position: absolute;
-  top: -150px;
-  left: -150px;
-  width: 600px;
-  height: 600px;
-  background-image: url("./assets/bolitarosa.svg"); /* Add your pink circle asset */
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0.8;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-image: url("assets/user-login-background.svg");
+  background-size: cover;
+  background-position: center;
   z-index: 0;
 }
 
-.auth-container::after {
+/* Register Background Pattern */
+body:has(#register-form) .auth-container::before {
   content: "";
   position: absolute;
-  bottom: -150px;
-  right: -150px;
-  width: 600px;
-  height: 600px;
-  background-image: url("./assets/bolitanegra.svg"); /* Add your black circle asset */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-image: url("assets/user-register-background.svg");
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+/* Decorative Elements - Login */
+body:has(#login-form) .auth-container::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  background-image: url("assets/espiral.svg");
   background-size: contain;
   background-repeat: no-repeat;
-  opacity: 0.8;
+  background-position: center;
   z-index: 0;
+}
+
+/* Decorative Elements - Register */
+body:has(#register-form) .auth-container::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  right: 20%;
+  width: 60%;
+  height: 60%;
+  background-image: url("assets/espiral.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 0;
+}
+
+/* Header Section with Decorative Elements */
+.auth-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.auth-header::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 100px;
+  background-image: url("assets/espiral.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+/* Badge-like labels */
+.decorative-badges {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.badge {
+  position: absolute;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Login badges */
+body:has(#login-form) .badge-fiestas {
+  top: 15%;
+  left: 10%;
+  background: #7bf809;
+  color: #000;
+}
+
+body:has(#login-form) .badge-diversion {
+  top: 20%;
+  right: 15%;
+  background: #ffb6e5;
+  color: #000;
+}
+
+body:has(#login-form) .badge-control {
+  bottom: 35%;
+  right: 25%;
+  background: #ff1493;
+  color: white;
+}
+
+/* Register badges */
+body:has(#register-form) .badge-fiestas {
+  top: 15%;
+  left: 10%;
+  background: #000;
+  color: white;
+}
+
+body:has(#register-form) .badge-diversion {
+  top: 20%;
+  right: 15%;
+  background: #ffb6e5;
+  color: #000;
+}
+
+body:has(#register-form) .badge-control {
+  bottom: 35%;
+  right: 25%;
+  background: #ff1493;
+  color: white;
+}
+
+/* Central connector element */
+.central-connector {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 60px;
+  background: white;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.central-connector::before {
+  content: "🏠 en casita";
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-right: 10px;
+}
+
+.central-connector::after {
+  content: "& festival";
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
 }
 
 .auth-container h2 {
-  color: #fff;
-  font-size: 2rem;
+  color: #333;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   text-align: center;
-  z-index: 1;
+  z-index: 3;
   position: relative;
+  background: white;
+  padding: 1rem 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .auth-form {
-  background: #fff;
-  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   max-width: 400px;
   width: 100%;
-  z-index: 1;
+  z-index: 3;
   position: relative;
+  margin-top: 2rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
   font-weight: 600;
   color: #333;
   margin-bottom: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
-.form-group input {
-  padding: 1rem;
+.form-group input,
+.form-group select {
+  padding: 0.8rem;
+  border-radius: 8px;
   border: none;
-  border-radius: 12px;
-  background-color: #b8ff35;
+  background-color: #ddfbc7;
   font-size: 1rem;
-  color: #333;
-  outline: none;
-  transition: all 0.3s ease;
 }
 
 .form-group input::placeholder {
   color: #666;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
   background-color: #a8e82b;
   transform: scale(1.02);
+  box-shadow: 0 0 0 3px rgba(184, 255, 53, 0.3);
 }
 
 .form-actions {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   text-align: center;
 }
 
 .btn {
   border: none;
-  border-radius: 12px;
-  padding: 1rem 2rem;
+  border-radius: 25px;
+  padding: 12px 40px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
@@ -126,17 +287,27 @@
 .btn-primary {
   background-color: #e645a4;
   color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn-primary:hover {
-  background-color: #d03896;
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .message {
   margin-top: 1rem;
   padding: 0.8rem;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 0.9rem;
   text-align: center;
 }
@@ -157,16 +328,33 @@
   text-align: center;
   margin-top: 1.5rem;
   color: #666;
+  font-size: 0.9rem;
 }
 
 .switch-form a {
-  color: #e645a4;
+  color: #ff1493;
   text-decoration: none;
   font-weight: bold;
 }
 
 .switch-form a:hover {
   text-decoration: underline;
+}
+
+/* Bottom text */
+.bottom-text {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: bold;
+  z-index: 3;
+  background: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* --- Dashboard Container --- */
@@ -535,25 +723,22 @@
 
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
-  .auth-container::before,
-  .auth-container::after {
-    width: 300px;
-    height: 300px;
-  }
-
-  .auth-container::before {
-    top: -100px;
-    left: -100px;
-  }
-
-  .auth-container::after {
-    bottom: -100px;
-    right: -100px;
+  .auth-container {
+    padding: 1rem;
   }
 
   .auth-form {
-    padding: 2rem;
+    padding: 1.5rem;
     max-width: 90%;
+  }
+
+  .decorative-badges {
+    display: none;
+  }
+
+  .central-connector {
+    width: 180px;
+    height: 50px;
   }
 
   .dashboard-header {
@@ -586,24 +771,14 @@
 }
 
 @media (max-width: 480px) {
-  .auth-container::before,
-  .auth-container::after {
-    width: 250px;
-    height: 250px;
-  }
-
-  .auth-container::before {
-    top: -80px;
-    left: -80px;
-  }
-
-  .auth-container::after {
-    bottom: -80px;
-    right: -80px;
-  }
-
   .auth-form {
-    padding: 1.5rem;
+    padding: 1rem;
+  }
+
+  .central-connector {
+    width: 160px;
+    height: 45px;
+    font-size: 14px;
   }
 
   .dashboard-header {
