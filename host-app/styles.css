@@ -687,6 +687,19 @@ body:has(#register-form) .badge-control {
 
 /* Mobile Large - 481px a 768px */
 @media (max-width: 768px) {
+  /* Usar fondos responsivos para mobile */
+  body:has(#login-form) .auth-container::before {
+    background-image: url("assets/user-login-responsive.svg");
+    background-size: contain;
+    background-position: center center;
+  }
+
+  body:has(#register-form) .auth-container::before {
+    background-image: url("assets/user-register-responsive.svg");
+    background-size: contain;
+    background-position: center center;
+  }
+
   .auth-container {
     padding: 1rem;
   }
@@ -733,65 +746,13 @@ body:has(#register-form) .badge-control {
     color: #333;
   }
 
-  /* Mostrar elemento decorativo de espiral en mobile */
-  body:has(#login-form) .auth-container::after {
-    display: block;
-    content: "";
-    position: absolute;
-    top: 15%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 200px;
-    background-image: url("assets/espiral.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 0;
-    opacity: 0.3;
-  }
-
+  /* Remover el espiral adicional ya que los SVGs responsivos incluyen decoraciones */
+  body:has(#login-form) .auth-container::after,
   body:has(#register-form) .auth-container::after {
-    display: block;
-    content: "";
-    position: absolute;
-    top: 15%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 200px;
-    background-image: url("assets/espiral.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 0;
-    opacity: 0.3;
+    display: none;
   }
 
-  /* Ajustar fondo para que se vea completo */
-  body:has(#login-form) .auth-container::before,
-  body:has(#register-form) .auth-container::before {
-    background-size: contain;
-    background-position: center center;
-  }
-
-  /* Mostrar texto inferior en mobile */
-  .bottom-text {
-    display: block;
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #333;
-    font-size: 1rem;
-    font-weight: bold;
-    z-index: 3;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 0.5rem 1.5rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  }
-
+  /* Resto de estilos mobile... */
   .dashboard-header {
     padding: 1.5rem;
   }
@@ -837,6 +798,13 @@ body:has(#register-form) .badge-control {
 
 /* Mobile Small - 320px a 480px */
 @media (max-width: 480px) {
+  /* Mantener fondos responsivos para móviles pequeños */
+  body:has(#login-form) .auth-container::before,
+  body:has(#register-form) .auth-container::before {
+    background-size: contain;
+    background-position: center center;
+  }
+
   .auth-container {
     padding: 0.5rem;
   }
@@ -859,21 +827,6 @@ body:has(#register-form) .badge-control {
   .central-connector::before,
   .central-connector::after {
     font-size: 12px;
-  }
-
-  /* Reducir tamaño del espiral en móviles pequeños */
-  body:has(#login-form) .auth-container::after,
-  body:has(#register-form) .auth-container::after {
-    width: 150px;
-    height: 150px;
-    top: 12%;
-  }
-
-  /* Ajustar fondo para pantallas muy pequeñas */
-  body:has(#login-form) .auth-container::before,
-  body:has(#register-form) .auth-container::before {
-    background-size: cover;
-    background-position: center top;
   }
 
   .bottom-text {
@@ -923,6 +876,13 @@ body:has(#register-form) .badge-control {
 
 /* Extra Small - Menos de 320px */
 @media (max-width: 320px) {
+  /* Asegurar que los fondos responsivos se mantengan optimizados */
+  body:has(#login-form) .auth-container::before,
+  body:has(#register-form) .auth-container::before {
+    background-size: cover;
+    background-position: center top;
+  }
+
   .auth-container {
     padding: 0.25rem;
   }
