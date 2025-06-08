@@ -27,64 +27,40 @@ body:has(#register-form) .auth-container {
   background: linear-gradient(135deg, #7bf809 0%, #62c607 100%);
 }
 
-/* Login Background Pattern */
+/* Login Background Pattern - Responsive */
 body:has(#login-form) .auth-container::before {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background-image: url("assets/user-login-background.svg");
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   z-index: 0;
 }
 
-/* Register Background Pattern */
+/* Register Background Pattern - Responsive */
 body:has(#register-form) .auth-container::before {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background-image: url("assets/user-register-background.svg");
   background-size: cover;
   background-position: center;
-  z-index: 0;
-}
-
-/* Decorative Elements - Login */
-body:has(#login-form) .auth-container::after {
-  content: "";
-  position: absolute;
-  top: 20%;
-  left: 20%;
-  width: 60%;
-  height: 60%;
-  background-image: url("assets/espiral.svg");
-  background-size: contain;
   background-repeat: no-repeat;
-  background-position: center;
   z-index: 0;
 }
 
-/* Decorative Elements - Register */
+/* Decorative Elements - Solo visible en mobile */
+body:has(#login-form) .auth-container::after,
 body:has(#register-form) .auth-container::after {
-  content: "";
-  position: absolute;
-  top: 20%;
-  right: 20%;
-  width: 60%;
-  height: 60%;
-  background-image: url("assets/espiral.svg");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  z-index: 0;
+  display: none;
 }
 
 /* Header Section with Decorative Elements */
@@ -111,7 +87,7 @@ body:has(#register-form) .auth-container::after {
   z-index: -1;
 }
 
-/* Badge-like labels */
+/* Badge-like labels - Solo visible en desktop */
 .decorative-badges {
   position: absolute;
   width: 100%;
@@ -175,36 +151,9 @@ body:has(#register-form) .badge-control {
   color: white;
 }
 
-/* Central connector element */
+/* Central connector element - Solo visible en mobile */
 .central-connector {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px;
-  height: 60px;
-  background: white;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  z-index: 2;
-}
-
-.central-connector::before {
-  content: "🏠 en casita";
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin-right: 10px;
-}
-
-.central-connector::after {
-  content: "& festival";
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
+  display: none;
 }
 
 .auth-container h2 {
@@ -341,20 +290,9 @@ body:has(#register-form) .badge-control {
   text-decoration: underline;
 }
 
-/* Bottom text */
+/* Bottom text - Solo visible en mobile */
 .bottom-text {
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #333;
-  font-size: 1.2rem;
-  font-weight: bold;
-  z-index: 3;
-  background: white;
-  padding: 0.5rem 1.5rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: none;
 }
 
 /* --- Dashboard Container --- */
@@ -722,6 +660,32 @@ body:has(#register-form) .badge-control {
 }
 
 /* --- Responsive Design --- */
+
+/* Tablet - 768px a 1024px */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .auth-container {
+    padding: 1.5rem;
+  }
+
+  .auth-form {
+    max-width: 450px;
+  }
+
+  .badge {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .dashboard-header {
+    padding: 1.8rem;
+  }
+
+  .dashboard-header h2 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Mobile Large - 481px a 768px */
 @media (max-width: 768px) {
   .auth-container {
     padding: 1rem;
@@ -732,13 +696,100 @@ body:has(#register-form) .badge-control {
     max-width: 90%;
   }
 
+  /* Ocultar badges en tablets y móviles */
   .decorative-badges {
     display: none;
   }
 
+  /* Mostrar conector central en mobile */
   .central-connector {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 180px;
     height: 50px;
+    background: white;
+    border-radius: 30px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+  }
+
+  .central-connector::before {
+    content: "🏠 en casita";
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-right: 8px;
+  }
+
+  .central-connector::after {
+    content: "& festival";
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  /* Mostrar elemento decorativo de espiral en mobile */
+  body:has(#login-form) .auth-container::after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    background-image: url("assets/espiral.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 0;
+    opacity: 0.3;
+  }
+
+  body:has(#register-form) .auth-container::after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    background-image: url("assets/espiral.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 0;
+    opacity: 0.3;
+  }
+
+  /* Ajustar fondo para que se vea completo */
+  body:has(#login-form) .auth-container::before,
+  body:has(#register-form) .auth-container::before {
+    background-size: contain;
+    background-position: center center;
+  }
+
+  /* Mostrar texto inferior en mobile */
+  .bottom-text {
+    display: block;
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #333;
+    font-size: 1rem;
+    font-weight: bold;
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   }
 
   .dashboard-header {
@@ -768,17 +819,67 @@ body:has(#register-form) .badge-control {
   .substance-card {
     padding: 1.5rem;
   }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab {
+    border-bottom: none;
+    border-left: 3px solid transparent;
+  }
+
+  .tab.active {
+    border-left-color: #e645a4;
+    border-bottom: none;
+  }
 }
 
+/* Mobile Small - 320px a 480px */
 @media (max-width: 480px) {
+  .auth-container {
+    padding: 0.5rem;
+  }
+
   .auth-form {
     padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .auth-container h2 {
+    font-size: 1.3rem;
+    padding: 0.8rem 1.5rem;
   }
 
   .central-connector {
     width: 160px;
     height: 45px;
-    font-size: 14px;
+  }
+
+  .central-connector::before,
+  .central-connector::after {
+    font-size: 12px;
+  }
+
+  /* Reducir tamaño del espiral en móviles pequeños */
+  body:has(#login-form) .auth-container::after,
+  body:has(#register-form) .auth-container::after {
+    width: 150px;
+    height: 150px;
+    top: 12%;
+  }
+
+  /* Ajustar fondo para pantallas muy pequeñas */
+  body:has(#login-form) .auth-container::before,
+  body:has(#register-form) .auth-container::before {
+    background-size: cover;
+    background-position: center top;
+  }
+
+  .bottom-text {
+    bottom: 60px;
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
   }
 
   .dashboard-header {
@@ -793,18 +894,10 @@ body:has(#register-form) .badge-control {
     padding: 1rem;
   }
 
-  .tabs {
-    flex-direction: column;
-  }
-
-  .tab {
-    border-bottom: none;
-    border-left: 3px solid transparent;
-  }
-
-  .tab.active {
-    border-left-color: #e645a4;
-    border-bottom: none;
+  #event-form input,
+  #event-form textarea {
+    padding: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .event-details-container {
@@ -821,5 +914,40 @@ body:has(#register-form) .badge-control {
 
   .substance-card {
     padding: 1rem;
+  }
+
+  .substance-card-header h3 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Extra Small - Menos de 320px */
+@media (max-width: 320px) {
+  .auth-container {
+    padding: 0.25rem;
+  }
+
+  .auth-form {
+    padding: 0.8rem;
+  }
+
+  .auth-container h2 {
+    font-size: 1.2rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .central-connector {
+    width: 140px;
+    height: 40px;
+  }
+
+  .central-connector::before,
+  .central-connector::after {
+    font-size: 11px;
+  }
+
+  .bottom-text {
+    font-size: 0.8rem;
+    bottom: 40px;
   }
 }
