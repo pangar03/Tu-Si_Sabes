@@ -1,40 +1,123 @@
-import { navigateTo, socket } from "../app.js";
+import { navigateTo, socket, makeRequest } from "../app.js";
 
-export default function renderEventDetails(data = {}) {
-  socket.on("change-status", (data) => {
-    renderEventDetails(data);
+export default async function renderEventDetails(data = {}) {
+  let eventData = data.event;
+
+  // Si no tenemos el evento completo pero tenemos el ID, cargarlo
+  if (!eventData && data.eventId && data.user) {
+    try {
+      eventData = await makeRequest(
+        `/event/${data.eventId}?userId=${data.user.id}&isOrg=false`,
+        "GET"
+      );
+    } catch (error) {
+      console.error("Error loading event:", error);
+      const app = document.getElementById("app");
+      app.innerHTML = `
+        <div class="error-container">
+          <h2>Error al cargar el evento</h2>
+          <p>No se pudo cargar la información del evento. Intenta nuevamente.</p>
+          <button onclick="history.back()" class="btn btn-primary">Volver</button>
+        </div>
+      `;
+      return;
+    }
+  }
+
+  // Verificar que tenemos los datos del evento
+  if (!eventData) {
+    const app = document.getElementById("app");
+    app.innerHTML = `
+      <div class="error-container">
+        <h2>Evento no encontrado</h2>
+        <p>No se encontró la información del evento solicitado.</p>
+        <button onclick="history.back()" class="btn btn-primary">Volver</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Configurar socket para actualizaciones en tiempo real
+  socket.on("change-status", (response) => {
+    if (response.event && response.event.id === eventData.id) {
+      renderEventDetails({ user: data.user, event: response.event });
+    }
+  });
+
+  socket.on("add-substance", (response) => {
+    if (response.event && response.event.id === eventData.id) {
+      renderEventDetails({ user: data.user, event: response.event });
+    }
   });
 
   const app = document.getElementById("app");
   app.innerHTML = `
         <div class="event-details-container">
-            <button class="back-button" onclick="history.back()"></button>
-            <div class="event-card ${getStatusClass(data.event.status)}">
+            <button class="back-button" onclick="history.back()">← Volver</button>
+            <div class="event-card ${getStatusClass(eventData.status)}">
                 <div class="event-card-header">
-                    <h2>${data.event.eventName}</h2>
-                    <p class="event-time">Hoy ${formatTime(
-                      data.event.eventStartDate
-                    )} - ${formatTime(data.event.eventEndDate)}</p>
-                    <p class="event-location">${data.event.eventLocation}</p>
+                    <h2>${eventData.eventName}</h2>
+                    <p class="event-time">${formatDate(
+                      eventData.eventStartDate
+                    )} ${formatTime(eventData.eventStartDate)} - ${formatTime(
+    eventData.eventEndDate
+  )}</p>
+                    <p class="event-location">${eventData.eventLocation}</p>
+                    <p class="event-created">Creado: ${eventData.createdAt}</p>
                 </div>
                 
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: ${getProgressWidth(
-                      data.event.status
+                      eventData.status
                     )}%"></div>
                 </div>
                 
                 <div class="status-content" id="status-message">
-                    ${getStatusContent(data.event.status)}
+                    ${getStatusContent(eventData.status)}
                 </div>
                 
-                ${getStatusActions(data.event.status)}
+                ${getStatusActions(eventData.status)}
+                
+                ${
+                  eventData.substances && eventData.substances.length > 0
+                    ? `<div class="substances-section">
+                    <h3>Sustancias Analizadas</h3>
+                    <div class="substances-list">
+                      ${eventData.substances
+                        .map(
+                          (substance) => `
+                        <div class="substance-item">
+                          <h4>${substance.name || "Sustancia desconocida"}</h4>
+                          <p><strong>Tipo:</strong> ${
+                            substance.type || "No especificado"
+                          }</p>
+                          <p><strong>Estado:</strong> ${
+                            substance.status || "Pendiente"
+                          }</p>
+                          ${
+                            substance.results
+                              ? `<p><strong>Resultados:</strong> ${substance.results}</p>`
+                              : ""
+                          }
+                          ${
+                            substance.observations
+                              ? `<p><strong>Observaciones:</strong> ${substance.observations}</p>`
+                              : ""
+                          }
+                        </div>
+                      `
+                        )
+                        .join("")}
+                    </div>
+                  </div>`
+                    : ""
+                }
             </div>
         </div>
     `;
 
   // Agregar event listeners específicos según el estado
-  addStatusEventListeners(data.event.status);
+  addStatusEventListeners(eventData.status, eventData.id, data.user);
 }
 
 function getStatusClass(status) {
@@ -70,6 +153,11 @@ function formatTime(dateString) {
   });
 }
 
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("es-CO");
+}
+
 function getStatusContent(status) {
   switch (status) {
     case "pending":
@@ -94,8 +182,13 @@ function getStatusContent(status) {
             `;
     case "analyzing":
       return `
-                <h3>¡Espera un poco más, estamos analizando! <span class="loading-animation"></span></h3>
+                <h3>¡Espera un poco más, estamos analizando! <span class="loading-animation">⏳</span></h3>
                 <p>Nuestro equipo está procesando las muestras recolectadas. Los resultados estarán listos muy pronto.</p>
+            `;
+    case "results":
+      return `
+                <h3>¡Resultados listos! ✅</h3>
+                <p>Los análisis han sido completados. Revisa los resultados de las sustancias analizadas.</p>
             `;
     default:
       return `
@@ -120,12 +213,17 @@ function getStatusActions(status) {
                 <textarea class="input-field" placeholder="¿Quieres agregar algún comentario adicional sobre las muestras?" id="additional-comments"></textarea>
                 <button class="action-button" onclick="submitComments()">Enviar comentarios</button>
             `;
+    case "results":
+      return `
+                <button class="action-button" onclick="downloadReport()">Descargar reporte</button>
+                <button class="action-button secondary" onclick="shareResults()">Compartir resultados</button>
+            `;
     default:
       return `<button class="action-button" onclick="refreshStatus()">Actualizar estado</button>`;
   }
 }
 
-function addStatusEventListeners(status) {
+function addStatusEventListeners(status, eventId, user) {
   // Agregar event listeners globales para las funciones de los botones
   window.showEventDetails = () => {
     alert("Mostrando detalles del evento...");
@@ -139,14 +237,27 @@ function addStatusEventListeners(status) {
     alert("Conectando con el equipo...");
   };
 
-  window.submitComments = () => {
+  window.submitComments = async () => {
     const comments = document.getElementById("additional-comments")?.value;
     if (comments && comments.trim()) {
-      alert("Comentarios enviados: " + comments);
-      document.getElementById("additional-comments").value = "";
+      try {
+        // Aquí podrías enviar los comentarios al servidor
+        alert("Comentarios enviados: " + comments);
+        document.getElementById("additional-comments").value = "";
+      } catch (error) {
+        alert("Error al enviar comentarios. Intenta nuevamente.");
+      }
     } else {
       alert("Por favor ingresa un comentario antes de enviar.");
     }
+  };
+
+  window.downloadReport = () => {
+    alert("Descargando reporte...");
+  };
+
+  window.shareResults = () => {
+    alert("Compartiendo resultados...");
   };
 
   window.refreshStatus = () => {
