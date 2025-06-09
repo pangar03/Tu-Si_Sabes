@@ -1,12 +1,17 @@
 const { supabase } = require("../config/supabase");
 
-const getEvents = async () => {
+const getEvents = async (userId = null, isOrg = false) => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from("events")
       .select(
         `
                 *,
+                users!events_user_id_fkey (
+                    id,
+                    username,
+                    is_org
+                ),
                 event_substances (
                     id,
                     substance_data,
@@ -16,6 +21,13 @@ const getEvents = async () => {
       )
       .order("created_at", { ascending: false });
 
+    // Si no es organización, filtrar solo eventos del usuario
+    if (!isOrg && userId) {
+      query = query.eq("user_id", userId);
+    }
+
+    const { data, error } = await query;
+
     if (error) {
       console.error("Error fetching events:", error);
       return [];
@@ -23,10 +35,12 @@ const getEvents = async () => {
 
     // Transformar datos para mantener compatibilidad con el frontend
     const transformedEvents = data.map((event) => {
-      const { event_data, ...eventFields } = event;
+      const { event_data, users, ...eventFields } = event;
 
       return {
         id: eventFields.id, // ID real de la base de datos
+        userId: eventFields.user_id, // ID del usuario propietario
+        userInfo: users, // Información del usuario propietario
         status: eventFields.status, // Estado actual del evento
         createdAt: new Date(eventFields.created_at).toLocaleString("es-CO", {
           timeZone: "America/Bogota",
@@ -38,6 +52,7 @@ const getEvents = async () => {
         ...event_data,
         // Asegurar que el ID y estado reales no sean sobrescritos
         id: eventFields.id,
+        userId: eventFields.user_id,
         status: eventFields.status,
         // Mantener el reportId como un campo separado si existe en event_data
         reportId: event_data?.id || event_data?.eventId,
@@ -51,8 +66,16 @@ const getEvents = async () => {
   }
 };
 
-const addEvent = async (event) => {
+const addEvent = async (event, userId) => {
   try {
+    // Verificar que el usuario existe
+    if (!userId) {
+      return {
+        code: 400,
+        message: "ID de usuario requerido para crear evento",
+      };
+    }
+
     // Separar las sustancias del evento principal
     const { substances, ...eventData } = event;
 
@@ -63,11 +86,21 @@ const addEvent = async (event) => {
       .from("events")
       .insert([
         {
+          user_id: userId,
           status: eventData.status,
           event_data: eventData,
         },
       ])
-      .select()
+      .select(
+        `
+        *,
+        users!events_user_id_fkey (
+          id,
+          username,
+          is_org
+        )
+      `
+      )
       .single();
 
     if (error) {
@@ -81,6 +114,8 @@ const addEvent = async (event) => {
     // Transformar para mantener compatibilidad
     const transformedEvent = {
       id: data.id, // ID real de la base de datos
+      userId: data.user_id, // ID del usuario propietario
+      userInfo: data.users, // Información del usuario propietario
       status: data.status,
       createdAt: new Date(data.created_at).toLocaleString("es-CO", {
         timeZone: "America/Bogota",
@@ -90,6 +125,7 @@ const addEvent = async (event) => {
       ...data.event_data,
       // Asegurar que el ID y estado reales no sean sobrescritos
       id: data.id,
+      userId: data.user_id,
       status: data.status,
       // Mantener el reportId como un campo separado si existe
       reportId: data.event_data?.id || data.event_data?.eventId,
@@ -109,13 +145,18 @@ const addEvent = async (event) => {
   }
 };
 
-const getEventById = async (id) => {
+const getEventById = async (id, userId = null, isOrg = false) => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from("events")
       .select(
         `
                 *,
+                users!events_user_id_fkey (
+                    id,
+                    username,
+                    is_org
+                ),
                 event_substances (
                     id,
                     substance_data,
@@ -123,13 +164,22 @@ const getEventById = async (id) => {
                 )
             `
       )
-      .eq("id", id)
-      .single();
+      .eq("id", id);
+
+    // Si no es organización, verificar que el evento pertenezca al usuario
+    if (!isOrg && userId) {
+      query = query.eq("user_id", userId);
+    }
+
+    const { data, error } = await query.single();
 
     if (error) {
       if (error.code === "PGRST116") {
         // No rows found
-        return { code: 404, message: "Evento no encontrado" };
+        return {
+          code: 404,
+          message: "Evento no encontrado o no tienes acceso",
+        };
       }
       console.error("Error fetching event:", error);
       return {
@@ -139,10 +189,12 @@ const getEventById = async (id) => {
     }
 
     // Transformar datos para mantener compatibilidad
-    const { event_data, ...eventFields } = data;
+    const { event_data, users, ...eventFields } = data;
 
     const transformedEvent = {
       id: eventFields.id, // ID real de la base de datos
+      userId: eventFields.user_id, // ID del usuario propietario
+      userInfo: users, // Información del usuario propietario
       status: eventFields.status, // Estado actual del evento
       createdAt: new Date(eventFields.created_at).toLocaleString("es-CO", {
         timeZone: "America/Bogota",
@@ -152,6 +204,7 @@ const getEventById = async (id) => {
       ...event_data,
       // Asegurar que el ID y estado reales no sean sobrescritos
       id: eventFields.id,
+      userId: eventFields.user_id,
       status: eventFields.status,
       // Mantener el reportId como un campo separado si existe
       reportId: event_data?.id || event_data?.eventId,
@@ -171,9 +224,15 @@ const getEventById = async (id) => {
   }
 };
 
-const changeStatus = async (id, status) => {
+const changeStatus = async (id, status, userId = null, isOrg = false) => {
   try {
-    // Primero obtener el evento ORIGINAL directamente de la base de datos
+    // Primero verificar acceso al evento
+    const eventCheck = await getEventById(id, userId, isOrg);
+    if (eventCheck.code !== 200) {
+      return eventCheck;
+    }
+
+    // Obtener el evento ORIGINAL directamente de la base de datos
     const { data: originalEvent, error: fetchError } = await supabase
       .from("events")
       .select("*")
@@ -181,9 +240,6 @@ const changeStatus = async (id, status) => {
       .single();
 
     if (fetchError) {
-      if (fetchError.code === "PGRST116") {
-        return { code: 404, message: "Evento no encontrado" };
-      }
       console.error("Error fetching original event:", fetchError);
       return {
         code: 500,
@@ -209,9 +265,6 @@ const changeStatus = async (id, status) => {
       .single();
 
     if (error) {
-      if (error.code === "PGRST116") {
-        return { code: 404, message: "Evento no encontrado" };
-      }
       console.error("Error updating status:", error);
       return {
         code: 500,
@@ -220,7 +273,7 @@ const changeStatus = async (id, status) => {
     }
 
     // Obtener el evento completo con sustancias usando la función existente
-    const eventWithSubstances = await getEventById(id);
+    const eventWithSubstances = await getEventById(id, userId, isOrg);
 
     return {
       code: 200,
@@ -236,24 +289,12 @@ const changeStatus = async (id, status) => {
   }
 };
 
-const addSubstance = async (id, substance) => {
+const addSubstance = async (id, substance, userId = null, isOrg = false) => {
   try {
-    // Verificar que el evento existe
-    const { data: eventExists, error: checkError } = await supabase
-      .from("events")
-      .select("id")
-      .eq("id", id)
-      .single();
-
-    if (checkError) {
-      if (checkError.code === "PGRST116") {
-        return { code: 404, message: "Evento no encontrado" };
-      }
-      console.error("Error checking event:", checkError);
-      return {
-        code: 500,
-        message: "Error interno del servidor",
-      };
+    // Verificar acceso al evento
+    const eventCheck = await getEventById(id, userId, isOrg);
+    if (eventCheck.code !== 200) {
+      return eventCheck;
     }
 
     // Agregar la sustancia
@@ -277,7 +318,7 @@ const addSubstance = async (id, substance) => {
     }
 
     // Obtener el evento completo actualizado
-    const eventWithSubstances = await getEventById(id);
+    const eventWithSubstances = await getEventById(id, userId, isOrg);
 
     return {
       code: 200,
