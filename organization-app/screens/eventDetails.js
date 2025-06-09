@@ -7,6 +7,8 @@ export default function renderEventDetails(data = {}) {
 
   const app = document.getElementById("app");
   app.innerHTML = `
+  <div class="event-details-container">
+<div class="event-card">
         <div id="event-details-header">
             <h2>${data.event.eventName}</h2>
             <p>Inicio: ${data.event.eventStartDate}</p>    
@@ -26,6 +28,8 @@ export default function renderEventDetails(data = {}) {
             }    
         </div>
         <div id="event-details-buttons"></div>
+        </div>
+        </div>
     `;
 
   switch (data.event.status) {
