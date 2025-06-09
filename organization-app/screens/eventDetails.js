@@ -41,7 +41,8 @@ export default function renderEventDetails(data = {}) {
     case "on-site":
       onSiteStatus(data);
       break;
-    case "analizing":
+    case "analyzing": // CORREGIDO: era "analizing"
+    case "analizing": // AGREGADO: mantener compatibilidad
       analyzingStatus(data);
       break;
     case "results":
@@ -114,21 +115,21 @@ async function confirmedStatus(data) {
 async function onSiteStatus(data) {
   const container = document.getElementById("event-details-buttons");
   container.innerHTML = `
-        <button class="btn btn-primary" id="analizing-event">Empezar análisis</button>
-    `;
+    <button class="btn btn-primary" id="analyzing-event">Empezar análisis</button>
+  `;
 
   document
-    .getElementById("analizing-event")
+    .getElementById("analyzing-event")
     .addEventListener("click", async () => {
       const response = await makeRequest(
         `/event/${data.event.id}/change-status`,
         "POST",
         {
-          status: "analizing",
+          status: "analyzing", // CORREGIDO: era "analizing"
         }
       );
       alert("Empezando análisis de sustancias evento");
-      console.log("Response from analizing:", response);
+      console.log("Response from analyzing:", response);
     });
 }
 
