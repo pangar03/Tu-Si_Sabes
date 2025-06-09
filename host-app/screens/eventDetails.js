@@ -76,47 +76,12 @@ export default async function renderEventDetails(data = {}) {
                     ${getStatusContent(eventData.status)}
                 </div>
                 
-                ${getStatusActions(eventData.status)}
-                
-                ${
-                  eventData.substances && eventData.substances.length > 0
-                    ? `<div class="substances-section">
-                    <h3>Sustancias Analizadas</h3>
-                    <div class="substances-list">
-                      ${eventData.substances
-                        .map(
-                          (substance) => `
-                        <div class="substance-item">
-                          <h4>${substance.name || "Sustancia desconocida"}</h4>
-                          <p><strong>Tipo:</strong> ${
-                            substance.type || "No especificado"
-                          }</p>
-                          <p><strong>Estado:</strong> ${
-                            substance.status || "Pendiente"
-                          }</p>
-                          ${
-                            substance.results
-                              ? `<p><strong>Resultados:</strong> ${substance.results}</p>`
-                              : ""
-                          }
-                          ${
-                            substance.observations
-                              ? `<p><strong>Observaciones:</strong> ${substance.observations}</p>`
-                              : ""
-                          }
-                        </div>
-                      `
-                        )
-                        .join("")}
-                    </div>
-                  </div>`
-                    : ""
-                }
+                ${getStatusActions(eventData.status, eventData.id)}
             </div>
         </div>
     `;
 
-  // Agregar event listeners específicos según el estado
+  // Agregar event listeners solo para las funciones necesarias
   addStatusEventListeners(eventData.status, eventData.id, data.user);
 }
 
@@ -126,25 +91,24 @@ function getStatusClass(status) {
     confirmed: "status-confirmed",
     "on-transit": "status-on-transit",
     "on-site": "status-on-site",
-    analyzing: "status-analyzing", // CORREGIDO: era "analizing"
-    analizing: "status-analyzing", // AGREGADO: mantener compatibilidad
-    results: "status-results", // CORREGIDO: ya estaba bien
-    completed: "status-completed", // CORREGIDO: ya estaba bien
+    analyzing: "status-analyzing",
+    analizing: "status-analyzing", // Mantener compatibilidad
+    results: "status-results",
+    completed: "status-completed",
   };
   return statusClasses[status] || "";
 }
 
-// CAMBIAR LA FUNCIÓN getProgressWidth (línea aproximada 95)
 function getProgressWidth(status) {
   const progressMap = {
     pending: 20,
     confirmed: 40,
     "on-transit": 60,
     "on-site": 80,
-    analyzing: 90, // CORREGIDO: era "analizing"
-    analizing: 90, // AGREGADO: mantener compatibilidad
-    results: 100, // CORREGIDO: ya estaba bien
-    completed: 100, // CORREGIDO: ya estaba bien
+    analyzing: 90,
+    analizing: 90, // Mantener compatibilidad
+    results: 100,
+    completed: 100,
   };
   return progressMap[status] || 0;
 }
@@ -185,8 +149,8 @@ function getStatusContent(status) {
         <h3>¡Llegamos!</h3>
         <p>Abre la puerta, nuestro equipo está listo para apoyar tu evento de la mejor manera.</p>
       `;
-    case "analyzing": // CORREGIDO: era "analizing"
-    case "analizing": // AGREGADO: mantener compatibilidad
+    case "analyzing":
+    case "analizing": // Mantener compatibilidad
       return `
         <h3>¡Espera un poco más, estamos analizando! <span class="loading-animation">⏳</span></h3>
         <p>Nuestro equipo está procesando las muestras recolectadas. Los resultados estarán listos muy pronto.</p>
@@ -209,81 +173,38 @@ function getStatusContent(status) {
   }
 }
 
-function getStatusActions(status) {
+function getStatusActions(status, eventId) {
   switch (status) {
-    case "pending":
-      return `<button class="action-button" disabled>Esperando confirmación...</button>`;
-    case "confirmed":
-      return `<button class="action-button" onclick="showEventDetails()">Ver detalles del evento</button>`;
-    case "on-transit":
-      return `<button class="action-button" onclick="trackLocation()">Seguir ubicación</button>`;
-    case "on-site":
-      return `<button class="action-button" onclick="contactTeam()">Contactar equipo</button>`;
-    case "analyzing": // CORREGIDO: era "analizing"
-    case "analizing": // AGREGADO: mantener compatibilidad
-      return `
-        <textarea class="input-field" placeholder="¿Quieres agregar algún comentario adicional sobre las muestras?" id="additional-comments"></textarea>
-        <button class="action-button" onclick="submitComments()">Enviar comentarios</button>
-      `;
     case "results":
-      return `
-        <button class="action-button" onclick="downloadReport()">Descargar reporte</button>
-        <button class="action-button secondary" onclick="shareResults()">Compartir resultados</button>
-      `;
+      return `<button class="action-button" onclick="viewReport()">Ver reporte de resultados</button>`;
     case "completed":
-      return `
-        <button class="action-button" onclick="downloadReport()">Descargar reporte final</button>
-        <button class="action-button secondary" onclick="shareResults()">Compartir resultados</button>
-        <button class="action-button secondary" onclick="viewFullReport()">Ver reporte completo</button>
-      `;
+      return `<button class="action-button" onclick="viewReport()">Ver reporte completo</button>`;
     default:
-      return `<button class="action-button" onclick="refreshStatus()">Actualizar estado</button>`;
+      return ""; // No mostrar botones para otros estados
   }
 }
 
 function addStatusEventListeners(status, eventId, user) {
-  // Agregar event listeners globales para las funciones de los botones
-  window.showEventDetails = () => {
-    alert("Mostrando detalles del evento...");
-  };
-
-  window.trackLocation = () => {
-    alert("Abriendo rastreador de ubicación...");
-  };
-
-  window.contactTeam = () => {
-    alert("Conectando con el equipo...");
-  };
-
-  window.submitComments = async () => {
-    const comments = document.getElementById("additional-comments")?.value;
-    if (comments && comments.trim()) {
+  // Solo agregar el event listener para ver el reporte cuando sea necesario
+  if (status === "results" || status === "completed") {
+    window.viewReport = async () => {
       try {
-        // Aquí podrías enviar los comentarios al servidor
-        alert("Comentarios enviados: " + comments);
-        document.getElementById("additional-comments").value = "";
+        // Obtener los datos completos del evento antes de navegar
+        const eventData = await makeRequest(
+          `/event/${eventId}?userId=${user.id}&isOrg=false`,
+          "GET"
+        );
+
+        // Guardar los datos del evento en sessionStorage para que report-access los pueda usar
+        sessionStorage.setItem("reportEventData", JSON.stringify(eventData));
+
+        // Navegar a report-access con parámetros que indiquen que debe mostrar el reporte
+        window.location.href = `/report-access?action=viewReport&eventId=${eventId}`;
       } catch (error) {
-        alert("Error al enviar comentarios. Intenta nuevamente.");
+        console.error("Error al cargar el evento para el reporte:", error);
+        // Si falla la carga, navegar solo con el ID del evento
+        window.location.href = `/report-access?action=viewReport&eventId=${eventId}`;
       }
-    } else {
-      alert("Por favor ingresa un comentario antes de enviar.");
-    }
-  };
-
-  window.downloadReport = () => {
-    alert("Descargando reporte...");
-  };
-
-  window.shareResults = () => {
-    alert("Compartiendo resultados...");
-  };
-
-  window.viewFullReport = () => {
-    // Navegar al reporte completo si está en estado completed
-    navigateTo("/report-view", { event: { id: eventId } });
-  };
-
-  window.refreshStatus = () => {
-    location.reload();
-  };
+    };
+  }
 }
