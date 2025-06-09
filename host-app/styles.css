@@ -229,24 +229,25 @@ body:has(#register-form) .badge-control {
 }
 
 .btn {
+  background-color: #e645a4;
+  color: #fff;
   border: none;
-  border-radius: 25px;
-  padding: 12px 40px;
-  font-size: 1rem;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
 }
 
 .btn-primary {
-  background: #e645a4;
-  color: white;
+  background-color: #e645a4;
+  color: #fff;
   border: none;
-  padding: 0.5rem 1.2rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -1060,24 +1061,22 @@ body:has(#register-form) .badge-control {
 .event-card-footer,
 .result-card-footer {
   display: flex;
-  justify-content: flex-end;
 }
 
 .btn-outline {
-  background: transparent;
-  border: 2px solid #e645a4;
-  color: #e645a4;
-  padding: 0.5rem 1.2rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  background-color: #e645a4;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-outline:hover {
   background: #e645a4;
-  color: white;
   transform: scale(1.05);
 }
 
@@ -1126,7 +1125,7 @@ body:has(#register-form) .badge-control {
 
 /* Contenido del estado */
 .status-content {
-  margin: 1rem 0;
+  margin-top: 1rem;
 }
 
 .status-content h3 {
@@ -1146,22 +1145,19 @@ body:has(#register-form) .badge-control {
 
 /* Botón de acción */
 .action-button {
-  background: linear-gradient(135deg, #e645a4, #ff6b9d);
-  color: white;
+  background-color: #e645a4;
+  color: #fff;
   border: none;
   border-radius: 12px;
   padding: 1rem 2rem;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
-  margin-top: 1rem;
 }
 
 .action-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(230, 69, 164, 0.3);
 }
 
 .action-button:active {
