@@ -124,9 +124,10 @@ export default function renderDashboard(data = {}) {
       );
 
       if (response && Array.isArray(response)) {
-        // Filtrar eventos que no estén en estado "results" o "completed"
+        // Filtrar eventos que no estén en estado "completed"
+        // Incluir analyzing y results como eventos activos
         const activeEvents = response.filter(
-          (event) => event.status !== "results" && event.status !== "completed"
+          (event) => event.status !== "completed"
         );
 
         if (activeEvents.length === 0) {
@@ -289,21 +290,21 @@ export default function renderDashboard(data = {}) {
     `;
   }
 
-  // Función para obtener texto del estado
+  // Función para obtener texto del estado - CORREGIDA
   function getStatusText(status) {
     const statusMap = {
       pending: "Pendiente",
       confirmed: "Confirmado",
       "on-transit": "En camino",
       "on-site": "En sitio",
-      analyzing: "Analizando",
-      results: "Completado",
+      analyzing: "Analizando", // Corregido: analyzing con 'y'
+      results: "Resultados listos", // Agregado estado results
       completed: "Completado",
     };
     return statusMap[status] || "Desconocido";
   }
 
-  // Función para obtener clase CSS del estado
+  // Función para obtener clase CSS del estado - CORREGIDA
   function getStatusClass(status) {
     return `status-${status}`;
   }
