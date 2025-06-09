@@ -68,29 +68,69 @@ const getEvents = async (userId = null, isOrg = false) => {
 
 const addEvent = async (event, userId) => {
   try {
+    console.log("=== DEBUG addEvent ===");
+    console.log("Received event:", event);
+    console.log("Received userId:", userId);
+
     // Verificar que el usuario existe
     if (!userId) {
+      console.log("Error: No userId provided");
       return {
         code: 400,
         message: "ID de usuario requerido para crear evento",
       };
     }
 
+    // Verificar que el userId es un número válido
+    const userIdNum = parseInt(userId);
+    if (isNaN(userIdNum)) {
+      console.log("Error: Invalid userId format:", userId);
+      return {
+        code: 400,
+        message: "ID de usuario inválido",
+      };
+    }
+
+    // Verificar que el usuario existe en la base de datos
+    const { data: userExists, error: userError } = await supabase
+      .from("users")
+      .select("id")
+      .eq("id", userIdNum)
+      .single();
+
+    if (userError) {
+      console.log("Error checking user existence:", userError);
+      return {
+        code: 400,
+        message: "Usuario no encontrado",
+      };
+    }
+
     // Separar las sustancias del evento principal
     const { substances, ...eventData } = event;
 
-    // Asegurar que el estado en event_data coincida con el estado principal
+    // Limpiar el eventData de campos que podrían causar conflictos
+    delete eventData.userId; // Remover si existe
+    delete eventData.id; // Remover el ID temporal del frontend
+
+    // Asegurar que el estado sea válido
     eventData.status = eventData.status || "pending";
+
+    console.log("Cleaned eventData:", eventData);
+    console.log("User ID to insert:", userIdNum);
+
+    // Preparar los datos para insertar
+    const insertData = {
+      user_id: userIdNum,
+      status: eventData.status,
+      event_data: eventData,
+    };
+
+    console.log("Data to insert:", insertData);
 
     const { data, error } = await supabase
       .from("events")
-      .insert([
-        {
-          user_id: userId,
-          status: eventData.status,
-          event_data: eventData,
-        },
-      ])
+      .insert([insertData])
       .select(
         `
         *,
@@ -104,12 +144,20 @@ const addEvent = async (event, userId) => {
       .single();
 
     if (error) {
-      console.error("Error adding event:", error);
+      console.error("Supabase insert error:", error);
+      console.error("Error details:", {
+        message: error.message,
+        hint: error.hint,
+        details: error.details,
+        code: error.code,
+      });
       return {
         code: 500,
-        message: "Error interno del servidor al crear evento",
+        message: "Error interno del servidor al crear evento: " + error.message,
       };
     }
+
+    console.log("Insert successful:", data);
 
     // Transformar para mantener compatibilidad
     const transformedEvent = {
@@ -131,16 +179,18 @@ const addEvent = async (event, userId) => {
       reportId: data.event_data?.id || data.event_data?.eventId,
     };
 
+    console.log("Transformed event:", transformedEvent);
+
     return {
       code: 200,
       message: "Evento añadido con éxito",
       event: transformedEvent,
     };
   } catch (error) {
-    console.error("Database error:", error);
+    console.error("Database error in addEvent:", error);
     return {
       code: 500,
-      message: "Error interno del servidor",
+      message: "Error interno del servidor: " + error.message,
     };
   }
 };
