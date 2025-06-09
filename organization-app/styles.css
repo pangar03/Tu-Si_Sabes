@@ -252,6 +252,15 @@ body:has(#register-form) .badge-control {
   transform: translateY(0);
 }
 
+.btn-secondary:hover {
+  background: #d03896;
+  transform: scale(1.05);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
 .message {
   margin-top: 1rem;
   padding: 1rem;
@@ -528,10 +537,8 @@ body:has(#register-form) .badge-control {
 }
 
 .event-card h3 {
-  color: #333;
   font-size: 1.3rem;
   font-weight: bold;
-  margin-bottom: 0.8rem;
 }
 
 .event-card > p {
@@ -632,7 +639,7 @@ body:has(#register-form) .badge-control {
 }
 
 .no-events p {
-  color: #888;
+  color: #666;
   font-size: 0.9rem;
 }
 
@@ -653,7 +660,7 @@ body:has(#register-form) .badge-control {
 }
 
 .error-message p {
-  color: #888;
+  color: #666;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -706,7 +713,8 @@ body:has(#register-form) .badge-control {
     gap: 1rem;
   }
 
-  .btn-primary {
+  .btn-primary,
+  .btn-secondary {
     width: 100%;
     text-align: center;
   }
@@ -779,4 +787,62 @@ body:has(#register-form) .badge-control {
   .event-card h3 {
     font-size: 1.1rem;
   }
+}
+.event-details-container {
+  background: linear-gradient(
+      173deg,
+      rgba(0, 0, 6, 0.75) 7.66%,
+      rgba(0, 0, 108, 0.1) 113.71%
+    ),
+    linear-gradient(174deg, #7bf809 8.18%, #e645a4 116.91%);
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.event-details-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(assets/user-results-background.svg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+.event-card,
+.result-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  padding: 1.5rem;
+  max-width: 100%;
+  width: 95%;
+}
+.event-card-header,
+.result-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+}
+#event-details-body {
+  position: relative;
+  z-index: 1;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
