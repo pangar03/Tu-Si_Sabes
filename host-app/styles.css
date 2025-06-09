@@ -5,6 +5,15 @@
   box-sizing: border-box;
 }
 
+/* --- Event Cards in Dashboard --- */
+.events-container,
+.completed-events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
 /* --- Auth Container (Login/Register) --- */
 .auth-container {
   min-height: 100vh;
@@ -231,18 +240,19 @@ body:has(#register-form) .badge-control {
 }
 
 .btn-primary {
-  background-color: #e645a4;
-  color: #fff;
+  background: #e645a4;
+  color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background-color: #d03896;
+  background: #d03896;
   transform: scale(1.05);
 }
 
@@ -451,19 +461,7 @@ body:has(#register-form) .badge-control {
   background-color: #444;
 }
 
-/* --- Event Details Container --- */
-.event-details-container {
-  background: linear-gradient(
-      173deg,
-      rgba(0, 0, 6, 0.75) 7.66%,
-      rgba(0, 0, 108, 0.1) 113.71%
-    ),
-    linear-gradient(174deg, #7bf809 8.18%, #e645a4 116.91%);
-  min-height: 100vh;
-  padding: 2rem;
-  position: relative;
-  overflow: hidden;
-}
+.event-details-container
 
 /* Background assets placeholder */
 .event-details-container::before {
@@ -767,16 +765,6 @@ body:has(#register-form) .badge-control {
     flex-direction: row;
     margin-bottom: 1rem;
   }
-
-  .tab {
-    border-bottom: none;
-    border-left: 3px solid transparent;
-  }
-
-  .tab.active {
-    border-left-color: #e645a4;
-    border-bottom: none;
-  }
 }
 
 /* Mobile Small - 320px a 480px */
@@ -927,18 +915,174 @@ body:has(#register-form) .badge-control {
   z-index: 0;
 }
 
-/* Contenedor de la tarjeta principal */
-.event-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 24px;
-  padding: 2rem;
-  max-width: 400px;
-  width: 90%;
-  position: relative;
-  z-index: 2;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+/* Estado específico para tarjetas completadas */
+.result-card.completed {
+  border-left: 4px solid #7bf809;
+}
+
+.result-card.completed .result-status {
+  background: #7bf809;
+  color: #333;
+}
+
+/* Estados específicos para event-cards */
+.event-card.status-pending {
+  border-left: 4px solid #ffa500;
+}
+
+.event-card.status-confirmed {
+  border-left: 4px solid #7bf809;
+}
+
+.event-card.status-on-transit {
+  border-left: 4px solid #2196f3;
+}
+
+.event-card.status-on-site {
+  border-left: 4px solid #4caf50;
+}
+
+.event-card.status-analyzing {
+  border-left: 4px solid #e645a4;
+}
+
+.event-card.status-results {
+  border-left: 4px solid #ff6b9d;
+}
+
+/* Mensajes de estado vacío */
+.no-events,
+.error-message {
   text-align: center;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 16px;
+  margin-top: 1rem;
+}
+
+.no-events h4,
+.error-message h4 {
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.no-events p,
+.error-message p {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.event-card,
+.result-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.event-card:hover,
+.result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.event-card-header,
+.result-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.event-card-header h4,
+.result-card-header h4 {
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+}
+
+.event-status,
+.result-status {
+  background: #e645a4;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+.event-card-body,
+.result-card-body {
+  margin-bottom: 1.5rem;
+}
+
+.event-location,
+.event-date,
+.event-created,
+.substances-count,
+.report-id {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.event-card-footer,
+.result-card-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid #e645a4;
+  color: #e645a4;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  background: #e645a4;
+  color: white;
+  transform: scale(1.05);
 }
 
 /* Header de la tarjeta */
