@@ -52,6 +52,15 @@ export default function renderDashboard(data = {}) {
     .addEventListener("submit", async (e) => {
       e.preventDefault();
 
+      // Verificar que el usuario esté presente
+      if (!data.user || !data.user.id) {
+        alert(
+          "Error: No se ha encontrado información del usuario. Por favor, inicia sesión nuevamente."
+        );
+        navigateTo("/login");
+        return;
+      }
+
       const eventName = document.getElementById("event-name").value;
       const hostEmail = document.getElementById("host-email").value;
       const eventLocation = document.getElementById("event-location").value;
@@ -66,6 +75,7 @@ export default function renderDashboard(data = {}) {
         alert("La fecha de inicio debe ser anterior a la fecha de fin.");
         return;
       }
+
       eventStartDate = new Date(eventStartDate).toLocaleString("es-CO", {
         timeZone: "America/Bogota",
       });
@@ -73,7 +83,7 @@ export default function renderDashboard(data = {}) {
         timeZone: "America/Bogota",
       });
 
-      const data = {
+      const eventData = {
         eventName,
         hostEmail,
         eventLocation,
@@ -81,10 +91,11 @@ export default function renderDashboard(data = {}) {
         eventEndDate,
         eventDescription,
         eventLink,
+        userId: data.user.id, // AGREGAR EL userId AQUÍ
       };
 
       try {
-        const res = await makeRequest("/new-event", "POST", data);
+        const res = await makeRequest("/new-event", "POST", eventData);
 
         if (res.code === 200) {
           // NAVIGATE TO EVENTDETAILS WITH THE EVENT AS DATA
@@ -97,7 +108,7 @@ export default function renderDashboard(data = {}) {
       } catch (error) {
         document.getElementById(
           "event-creation"
-        ).innerHTML = `<h5 class="message error">${res.message}</h5>`;
+        ).innerHTML = `<h5 class="message error">${error.message}</h5>`;
         alert(error.message);
       }
     });
