@@ -18,8 +18,8 @@ export default function renderDashboard(data = {}) {
   app.innerHTML = `
         <section class="dashboard-container">
         <div class="tabs">
-            <div class="tab active">Home</div>
-            <div class="tab">Mi pedido</div>
+            <div class="tab active" id="home-tab">Home</div>
+            <div class="tab" id="orders-tab">Mi pedido</div>
             <div class="tab">Resultados</div>
         </div>
         <div class="dashboard-header">
@@ -27,26 +27,190 @@ export default function renderDashboard(data = {}) {
               data.user ? data.user.username : ""
             }, ¿Qué haremos hoy?</h2>
             <p class="date">${formattedDate}</p>
-            <div id="event-creation">
-                <h3>¡Llévanos a un evento!</h3>
-                <form id="event-form">
-                    <input type="text" id="event-name" placeholder="Nombre del evento" required>
-                    <input type="email" id="host-email" placeholder="Correo del solicitante" required>
-                    <input type="text" id="event-location" placeholder="Dirección del evento" required>
-                    <label for="event-start-date">Fecha y hora de inicio:</label>
-                    <input type="datetime-local" id="event-start-date" required>
-                    <label for="event-end-date">Fecha y hora de fin:</label>
-                    <input type="datetime-local" id="event-end-date" required>
-                    <textarea id="event-description" placeholder="Descripción del evento" required></textarea>
-                    <input type="text" id="event-link" placeholder="Enlaza una URL del evento">
-                    <button type="submit" id="create-event-btn">Agendar</button>
-                </form>
+            
+            <!-- Sección Home -->
+            <div id="home-section">
+                <div id="event-creation">
+                    <h3>¡Llévanos a un evento!</h3>
+                    <form id="event-form">
+                        <input type="text" id="event-name" placeholder="Nombre del evento" required>
+                        <input type="email" id="host-email" placeholder="Correo del solicitante" required>
+                        <input type="text" id="event-location" placeholder="Dirección del evento" required>
+                        <label for="event-start-date">Fecha y hora de inicio:</label>
+                        <input type="datetime-local" id="event-start-date" required>
+                        <label for="event-end-date">Fecha y hora de fin:</label>
+                        <input type="datetime-local" id="event-end-date" required>
+                        <textarea id="event-description" placeholder="Descripción del evento" required></textarea>
+                        <input type="text" id="event-link" placeholder="Enlaza una URL del evento">
+                        <button type="submit" id="create-event-btn">Agendar</button>
+                    </form>
+                </div>
             </div>
+            
+            <!-- Sección Mi pedido -->
+            <div id="orders-section" style="display: none;">
+                <div id="orders-content">
+                    <h3>Mis eventos</h3>
+                    <div id="events-container">
+                        <div class="loading">Cargando eventos...</div>
+                    </div>
+                </div>
+            </div>
+            
             <button id="logout-btn" class="btn btn-primary">Cerrar Sesión</button>
         </div>
         </section>
     `;
 
+  // Event listeners para los tabs
+  document.getElementById("home-tab").addEventListener("click", () => {
+    switchTab("home");
+  });
+
+  document.getElementById("orders-tab").addEventListener("click", () => {
+    switchTab("orders");
+    loadUserEvents(data.user.id);
+  });
+
+  // Función para cambiar entre tabs
+  function switchTab(tab) {
+    // Remover active de todos los tabs
+    document
+      .querySelectorAll(".tab")
+      .forEach((t) => t.classList.remove("active"));
+
+    if (tab === "home") {
+      document.getElementById("home-tab").classList.add("active");
+      document.getElementById("home-section").style.display = "block";
+      document.getElementById("orders-section").style.display = "none";
+    } else if (tab === "orders") {
+      document.getElementById("orders-tab").classList.add("active");
+      document.getElementById("home-section").style.display = "none";
+      document.getElementById("orders-section").style.display = "block";
+    }
+  }
+
+  // Función para cargar eventos del usuario
+  async function loadUserEvents(userId) {
+    const eventsContainer = document.getElementById("events-container");
+    eventsContainer.innerHTML =
+      '<div class="loading">Cargando eventos...</div>';
+
+    try {
+      const response = await makeRequest(
+        `/events?userId=${userId}&isOrg=false`,
+        "GET"
+      );
+
+      if (response && Array.isArray(response)) {
+        // Filtrar eventos que no estén en estado "results" (completados)
+        const activeEvents = response.filter(
+          (event) => event.status !== "results"
+        );
+
+        if (activeEvents.length === 0) {
+          eventsContainer.innerHTML = `
+            <div class="no-events">
+              <h4>No tienes eventos activos</h4>
+              <p>Crea tu primer evento desde la pestaña Home</p>
+            </div>
+          `;
+          return;
+        }
+
+        // Crear tarjetas de eventos
+        const eventsHTML = activeEvents
+          .map((event) => createEventCard(event))
+          .join("");
+        eventsContainer.innerHTML = eventsHTML;
+
+        // Agregar event listeners a las tarjetas
+        activeEvents.forEach((event) => {
+          document
+            .getElementById(`event-card-${event.id}`)
+            .addEventListener("click", () => {
+              navigateTo("/event-details", { user: data.user, event: event });
+            });
+        });
+      } else {
+        eventsContainer.innerHTML = `
+          <div class="error-message">
+            <h4>Error al cargar eventos</h4>
+            <p>No se pudieron cargar tus eventos. Intenta nuevamente.</p>
+            <button onclick="loadUserEvents(${userId})" class="btn btn-secondary">Reintentar</button>
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error("Error loading events:", error);
+      eventsContainer.innerHTML = `
+        <div class="error-message">
+          <h4>Error de conexión</h4>
+          <p>No se pudo conectar con el servidor. Verifica tu conexión e intenta nuevamente.</p>
+          <button onclick="loadUserEvents(${userId})" class="btn btn-secondary">Reintentar</button>
+        </div>
+      `;
+    }
+  }
+
+  // Función para crear tarjeta de evento
+  function createEventCard(event) {
+    const statusText = getStatusText(event.status);
+    const statusClass = getStatusClass(event.status);
+
+    return `
+      <div class="event-card ${statusClass}" id="event-card-${event.id}">
+        <div class="event-card-header">
+          <h4>${event.eventName}</h4>
+          <span class="event-status">${statusText}</span>
+        </div>
+        <div class="event-card-body">
+          <p class="event-location">📍 ${event.eventLocation}</p>
+          <p class="event-date">📅 ${formatEventDate(event.eventStartDate)}</p>
+          <p class="event-created">Creado: ${event.createdAt}</p>
+        </div>
+        <div class="event-card-footer">
+          <button class="btn btn-outline">Ver detalles</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Función para obtener texto del estado
+  function getStatusText(status) {
+    const statusMap = {
+      pending: "Pendiente",
+      confirmed: "Confirmado",
+      "on-transit": "En camino",
+      "on-site": "En sitio",
+      analyzing: "Analizando",
+      results: "Completado",
+    };
+    return statusMap[status] || "Desconocido";
+  }
+
+  // Función para obtener clase CSS del estado
+  function getStatusClass(status) {
+    return `status-${status}`;
+  }
+
+  // Función para formatear fecha del evento
+  function formatEventDate(dateString) {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("es-CO", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (error) {
+      return dateString;
+    }
+  }
+
+  // Event listener para el formulario de eventos (existente)
   document
     .getElementById("event-form")
     .addEventListener("submit", async (e) => {
@@ -91,7 +255,7 @@ export default function renderDashboard(data = {}) {
         eventEndDate,
         eventDescription,
         eventLink,
-        userId: data.user.id, // AGREGAR EL userId AQUÍ
+        userId: data.user.id,
       };
 
       try {
@@ -116,4 +280,7 @@ export default function renderDashboard(data = {}) {
   document.getElementById("logout-btn").addEventListener("click", function () {
     navigateTo("/login");
   });
+
+  // Hacer la función loadUserEvents disponible globalmente para el botón de reintentar
+  window.loadUserEvents = loadUserEvents;
 }
