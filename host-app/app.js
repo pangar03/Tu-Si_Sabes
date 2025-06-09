@@ -4,6 +4,7 @@ import renderRegister from "./screens/register.js";
 import renderDashboard from "./screens/dashboard.js";
 import renderEventDetails from "./screens/eventDetails.js";
 import renderResultsPage from "./screens/resultsPage.js";
+import renderReportView from "../report-access/screens/reportView.js";
 
 const socket = io("/", { path: "/real-time" });
 
@@ -36,48 +37,15 @@ function renderCurrentRoute() {
       clearScripts();
       renderResultsPage(route.data);
       break;
+    case "/report-view":
+      clearScripts();
+      renderReportView(route.data);
+      break;
     default:
       const app = document.getElementById("app");
       app.innerHTML = `<h1>404 - Not Found</h1><p>La página que estás buscando no existe.</p>`;
   }
 }
-
-// Función temporal para dashboard
-// function renderDashboard(data = {}) {
-//   // Obtener la fecha actual
-//   const now = new Date();
-//   const options = { weekday: "long", month: "short" };
-//   const dateFormatter = new Intl.DateTimeFormat("es-ES", options);
-//   const parts = dateFormatter.formatToParts(now);
-//   // Extraer día de la semana y mes
-//   const weekday = parts.find((part) => part.type === "weekday").value;
-//   const month = parts.find((part) => part.type === "month").value;
-//   // Obtener el día del mes
-//   const day = now.getDate();
-
-//   const formattedDate = `${weekday}, ${day} ${month}`;
-
-//   const app = document.getElementById("app");
-//   app.innerHTML = `
-//     <section class="dashboard-container">
-//       <div class="tabs">
-//         <div class="tab active">Home</div>
-//         <div class="tab">Mi pedido</div>
-//         <div class="tab">Resultados</div>
-//       </div>
-//     <div class="dashboard-header">
-//       <h2>¡Hola! ${data.user ? data.user.username : ""}, ¿Qué haremos hoy?</h2>
-//         <p class="date">${formattedDate}</p>
-//         <div class="message success">${data.message || ""}</div>
-//         <button id="logout-btn" class="btn btn-primary">Cerrar Sesión</button>
-//       </div>
-//     </section>
-//   `;
-
-//   document.getElementById("logout-btn").addEventListener("click", function () {
-//     navigateTo("/login");
-//   });
-// }
 
 function navigateTo(path, data = {}) {
   route = { path, data };
