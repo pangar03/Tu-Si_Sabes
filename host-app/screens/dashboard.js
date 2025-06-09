@@ -175,7 +175,7 @@ export default function renderDashboard(data = {}) {
     }
   }
 
-  // Función para cargar eventos completados
+  // Función para cargar eventos completados - CORREGIDA
   async function loadCompletedEvents(userId) {
     const completedEventsContainer = document.getElementById(
       "completed-events-container"
@@ -211,13 +211,29 @@ export default function renderDashboard(data = {}) {
           .join("");
         completedEventsContainer.innerHTML = resultsHTML;
 
-        // Agregar event listeners a las tarjetas de resultados
+        // CORRECCIÓN: Agregar event listeners a las tarjetas de resultados completados
+        // Navegar a report-access en lugar de navegación interna
         completedEvents.forEach((event) => {
           document
             .getElementById(`result-card-${event.id}`)
-            .addEventListener("click", () => {
-              // Navegar a reportView con el evento
-              navigateTo("/report-view", { event: event });
+            .addEventListener("click", async () => {
+              try {
+                // Guardar los datos del evento en sessionStorage para que report-access los pueda usar
+                sessionStorage.setItem(
+                  "reportEventData",
+                  JSON.stringify(event)
+                );
+
+                // Navegar a report-access con parámetros que indiquen que debe mostrar el reporte
+                window.location.href = `/report-access?action=viewReport&eventId=${event.id}`;
+              } catch (error) {
+                console.error(
+                  "Error al preparar navegación al reporte:",
+                  error
+                );
+                // Si falla, navegar solo con el ID del evento
+                window.location.href = `/report-access?action=viewReport&eventId=${event.id}`;
+              }
             });
         });
       } else {
