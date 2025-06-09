@@ -5,8 +5,8 @@ export default function renderLogin(data = {}) {
   const app = document.getElementById("app");
   app.innerHTML = `
     <div class="auth-container">
-      <h2>Iniciar Sesión</h2>
-      <form id="login-form" class="auth-form">
+    <form id="login-form" class="auth-form">
+    <h2>¡Parchemos juntos!</h2>
         <div class="form-group">
           <label for="username">Usuario:</label>
           <input type="text" id="username" name="username" required>
