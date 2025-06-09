@@ -126,8 +126,9 @@ function getStatusClass(status) {
     confirmed: "status-confirmed",
     "on-transit": "status-on-transit",
     "on-site": "status-on-site",
-    analyzing: "status-analyzing",
-    results: "status-results",
+    analyzing: "status-analyzing", // Corregido: analyzing con 'y'
+    results: "status-results", // Agregado estado results
+    completed: "status-completed", // Agregado estado completed
   };
   return statusClasses[status] || "";
 }
@@ -138,8 +139,9 @@ function getProgressWidth(status) {
     confirmed: 40,
     "on-transit": 60,
     "on-site": 80,
-    analyzing: 90,
-    results: 100,
+    analyzing: 90, // Corregido: analyzing con 'y'
+    results: 100, // Agregado estado results
+    completed: 100, // Agregado estado completed
   };
   return progressMap[status] || 0;
 }
@@ -180,7 +182,7 @@ function getStatusContent(status) {
                 <h3>¡Llegamos!</h3>
                 <p>Abre la puerta, nuestro equipo está listo para apoyar tu evento de la mejor manera.</p>
             `;
-    case "analyzing":
+    case "analyzing": // Corregido: analyzing con 'y'
       return `
                 <h3>¡Espera un poco más, estamos analizando! <span class="loading-animation">⏳</span></h3>
                 <p>Nuestro equipo está procesando las muestras recolectadas. Los resultados estarán listos muy pronto.</p>
@@ -189,6 +191,11 @@ function getStatusContent(status) {
       return `
                 <h3>¡Resultados listos! ✅</h3>
                 <p>Los análisis han sido completados. Revisa los resultados de las sustancias analizadas.</p>
+            `;
+    case "completed": // Agregado estado completed
+      return `
+                <h3>¡Evento completado! 🎉</h3>
+                <p>El evento ha sido finalizado exitosamente. Todos los resultados están disponibles para su consulta.</p>
             `;
     default:
       return `
@@ -208,7 +215,7 @@ function getStatusActions(status) {
       return `<button class="action-button" onclick="trackLocation()">Seguir ubicación</button>`;
     case "on-site":
       return `<button class="action-button" onclick="contactTeam()">Contactar equipo</button>`;
-    case "analyzing":
+    case "analyzing": // Corregido: analyzing con 'y'
       return `
                 <textarea class="input-field" placeholder="¿Quieres agregar algún comentario adicional sobre las muestras?" id="additional-comments"></textarea>
                 <button class="action-button" onclick="submitComments()">Enviar comentarios</button>
@@ -217,6 +224,12 @@ function getStatusActions(status) {
       return `
                 <button class="action-button" onclick="downloadReport()">Descargar reporte</button>
                 <button class="action-button secondary" onclick="shareResults()">Compartir resultados</button>
+            `;
+    case "completed": // Agregado estado completed
+      return `
+                <button class="action-button" onclick="downloadReport()">Descargar reporte final</button>
+                <button class="action-button secondary" onclick="shareResults()">Compartir resultados</button>
+                <button class="action-button secondary" onclick="viewFullReport()">Ver reporte completo</button>
             `;
     default:
       return `<button class="action-button" onclick="refreshStatus()">Actualizar estado</button>`;
@@ -258,6 +271,11 @@ function addStatusEventListeners(status, eventId, user) {
 
   window.shareResults = () => {
     alert("Compartiendo resultados...");
+  };
+
+  window.viewFullReport = () => {
+    // Navegar al reporte completo si está en estado completed
+    navigateTo("/report-view", { event: { id: eventId } });
   };
 
   window.refreshStatus = () => {
