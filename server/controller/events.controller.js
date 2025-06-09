@@ -8,27 +8,52 @@ const {
 const { emitEvent } = require("../services/socket.service");
 
 const getEventsController = async (req, res) => {
-  const response = await getEvents();
+  // Obtener información del usuario de los query parameters o headers
+  const userId = req.query.userId || req.headers["user-id"];
+  const isOrg = req.query.isOrg === "true" || req.headers["is-org"] === "true";
+
+  const response = await getEvents(userId, isOrg);
   res.send(response);
 };
 
 const addEventController = async (req, res) => {
   const event = req.body;
+
+  // Obtener userId del body, query params o headers
+  const userId = event.userId || req.query.userId || req.headers["user-id"];
+
+  if (!userId) {
+    return res.send({
+      code: 400,
+      message: "ID de usuario requerido para crear evento",
+    });
+  }
+
+  // Limpiar el userId del body del evento para evitar duplicados
+  delete event.userId;
+
   event.id = Date.now();
   event.createdAt = new Date(event.id).toLocaleString("es-CO", {
     timeZone: "America/Bogota",
   });
   event.status = "pending";
   event.substances = [];
-  const response = await addEvent(event);
 
-  emitEvent("new-event", response.event);
+  const response = await addEvent(event, userId);
+
+  if (response.code === 200) {
+    emitEvent("new-event", response.event);
+  }
+
   return res.send(response);
 };
 
 const getEventByIdController = async (req, res) => {
   const id = req.params.id;
-  const response = await getEventById(id);
+  const userId = req.query.userId || req.headers["user-id"];
+  const isOrg = req.query.isOrg === "true" || req.headers["is-org"] === "true";
+
+  const response = await getEventById(id, userId, isOrg);
 
   if (response.code !== 200) {
     return res.send(response.message);
@@ -40,16 +65,18 @@ const getEventByIdController = async (req, res) => {
 const changeStatusController = async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;
+  const userId = req.query.userId || req.headers["user-id"];
+  const isOrg = req.query.isOrg === "true" || req.headers["is-org"] === "true";
 
   console.log(
     `Attempting to change status for event ID: ${id} to status: ${status}`
   );
 
-  const response = await changeStatus(id, status);
+  const response = await changeStatus(id, status, userId, isOrg);
 
   console.log("Response from changeStatus:", response);
 
-  // CAMBIO: Verificar que la respuesta y el evento existan antes de emitir
+  // Verificar que la respuesta y el evento existan antes de emitir
   if (response.code === 200 && response.event) {
     console.log("Emitting change-status event with:", response.event);
     emitEvent("change-status", response);
@@ -63,14 +90,16 @@ const changeStatusController = async (req, res) => {
 const addSubstanceController = async (req, res) => {
   const id = req.params.id;
   const substance = req.body;
+  const userId = req.query.userId || req.headers["user-id"];
+  const isOrg = req.query.isOrg === "true" || req.headers["is-org"] === "true";
 
   console.log(`Attempting to add substance to event ID: ${id}`);
 
-  const response = await addSubstance(id, substance);
+  const response = await addSubstance(id, substance, userId, isOrg);
 
   console.log("Response from addSubstance:", response);
 
-  // CAMBIO: Verificar que la respuesta y el evento existan antes de emitir
+  // Verificar que la respuesta y el evento existan antes de emitir
   if (response.code === 200 && response.event) {
     console.log("Emitting add-substance event with:", response.event);
     emitEvent("add-substance", response);
