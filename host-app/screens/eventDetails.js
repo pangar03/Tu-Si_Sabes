@@ -17,7 +17,7 @@ export default async function renderEventDetails(data = {}) {
         <div class="error-container">
           <h2>Error al cargar el evento</h2>
           <p>No se pudo cargar la información del evento. Intenta nuevamente.</p>
-          <button onclick="history.back()" class="btn btn-primary">Volver</button>
+          <button onclick="history.back()" class="btn btn-primary">←</button>
         </div>
       `;
       return;
@@ -31,7 +31,7 @@ export default async function renderEventDetails(data = {}) {
       <div class="error-container">
         <h2>Evento no encontrado</h2>
         <p>No se encontró la información del evento solicitado.</p>
-        <button onclick="history.back()" class="btn btn-primary">Volver</button>
+        <button onclick="history.back()" class="btn btn-primary">←</button>
       </div>
     `;
     return;
@@ -53,7 +53,7 @@ export default async function renderEventDetails(data = {}) {
   const app = document.getElementById("app");
   app.innerHTML = `
         <div class="event-details-container">
-            <button class="back-button" onclick="history.back()">← Volver</button>
+            <button class="back-button" onclick="history.back()">←</button>
             <div class="event-card ${getStatusClass(eventData.status)}">
                 <div class="event-card-header">
                     <h2>${eventData.eventName}</h2>
@@ -152,7 +152,7 @@ function getStatusContent(status) {
     case "analyzing":
     case "analizing": // Mantener compatibilidad
       return `
-        <h3>¡Espera un poco más, estamos analizando! <span class="loading-animation">⏳</span></h3>
+        <h3>¡Espera un poco más, estamos analizando! <span class="loading-animation"></span></h3>
         <p>Nuestro equipo está procesando las muestras recolectadas. Los resultados estarán listos muy pronto.</p>
       `;
     case "results":
