@@ -1229,7 +1229,7 @@ body:has(#register-form) .badge-control {
   border-top: 3px solid #e645a4;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-left: 10px;
+  margin-left: 3rem;
 }
 
 @keyframes spin {
@@ -1265,7 +1265,6 @@ body:has(#register-form) .badge-control {
 }
 
 .back-button::before {
-  content: "←";
   font-size: 1.2rem;
   color: #333;
 }
