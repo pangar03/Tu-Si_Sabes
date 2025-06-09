@@ -57,8 +57,67 @@ async function makeRequest(url, method, body) {
   }
 }
 
+// Función para detectar y manejar navegación desde host-app
+function handleDirectNavigation() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const action = urlParams.get("action");
+  const eventId = urlParams.get("eventId");
+
+  if (action === "viewReport" && eventId) {
+    // Intentar obtener datos del evento desde sessionStorage
+    const eventDataFromStorage = sessionStorage.getItem("reportEventData");
+
+    if (eventDataFromStorage) {
+      try {
+        const eventData = JSON.parse(eventDataFromStorage);
+        // Limpiar sessionStorage después de usar los datos
+        sessionStorage.removeItem("reportEventData");
+        // Navegar directamente al reporte con los datos
+        navigateTo("/report-view", { event: eventData });
+        return true;
+      } catch (error) {
+        console.error(
+          "Error al parsear datos del evento desde sessionStorage:",
+          error
+        );
+      }
+    }
+
+    // Si no hay datos en sessionStorage, cargar desde el servidor
+    loadEventAndShowReport(eventId);
+    return true;
+  }
+
+  return false;
+}
+
+// Función para cargar evento desde el servidor y mostrar el reporte
+async function loadEventAndShowReport(eventId) {
+  try {
+    const eventData = await makeRequest(`/event/${eventId}`, "GET");
+    if (eventData && eventData.id) {
+      navigateTo("/report-view", { event: eventData });
+    } else {
+      navigateTo("/search-report", {
+        message: "No se pudo cargar el evento solicitado",
+        messageType: "error",
+      });
+    }
+  } catch (error) {
+    console.error("Error al cargar el evento:", error);
+    navigateTo("/search-report", {
+      message: "Error al cargar el evento. Intenta nuevamente.",
+      messageType: "error",
+    });
+  }
+}
+
 // Inicializar la aplicación
-renderCurrentRoute();
+// Primero verificar si viene navegación directa desde host-app
+if (!handleDirectNavigation()) {
+  // Si no es navegación directa, renderizar la ruta normal
+  renderCurrentRoute();
+}
 
 // Configurar escucha de eventos de Socket.io
 socket.on("connect", () => {
