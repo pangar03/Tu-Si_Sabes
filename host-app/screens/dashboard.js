@@ -20,7 +20,7 @@ export default function renderDashboard(data = {}) {
         <div class="tabs">
             <div class="tab active" id="home-tab">Home</div>
             <div class="tab" id="orders-tab">Mi pedido</div>
-            <div class="tab">Resultados</div>
+            <div class="tab" id="results-tab">Resultados</div>
         </div>
         <div class="dashboard-header">
             <h2>¡Hola! ${
@@ -57,6 +57,16 @@ export default function renderDashboard(data = {}) {
                 </div>
             </div>
             
+            <!-- Sección Resultados -->
+            <div id="results-section" style="display: none;">
+                <div id="results-content">
+                    <h3>Resultados completados</h3>
+                    <div id="completed-events-container">
+                        <div class="loading">Cargando resultados...</div>
+                    </div>
+                </div>
+            </div>
+            
             <button id="logout-btn" class="btn btn-primary">Cerrar Sesión</button>
         </div>
         </section>
@@ -72,6 +82,11 @@ export default function renderDashboard(data = {}) {
     loadUserEvents(data.user.id);
   });
 
+  document.getElementById("results-tab").addEventListener("click", () => {
+    switchTab("results");
+    loadCompletedEvents(data.user.id);
+  });
+
   // Función para cambiar entre tabs
   function switchTab(tab) {
     // Remover active de todos los tabs
@@ -79,14 +94,20 @@ export default function renderDashboard(data = {}) {
       .querySelectorAll(".tab")
       .forEach((t) => t.classList.remove("active"));
 
+    // Ocultar todas las secciones
+    document.getElementById("home-section").style.display = "none";
+    document.getElementById("orders-section").style.display = "none";
+    document.getElementById("results-section").style.display = "none";
+
     if (tab === "home") {
       document.getElementById("home-tab").classList.add("active");
       document.getElementById("home-section").style.display = "block";
-      document.getElementById("orders-section").style.display = "none";
     } else if (tab === "orders") {
       document.getElementById("orders-tab").classList.add("active");
-      document.getElementById("home-section").style.display = "none";
       document.getElementById("orders-section").style.display = "block";
+    } else if (tab === "results") {
+      document.getElementById("results-tab").classList.add("active");
+      document.getElementById("results-section").style.display = "block";
     }
   }
 
@@ -103,9 +124,9 @@ export default function renderDashboard(data = {}) {
       );
 
       if (response && Array.isArray(response)) {
-        // Filtrar eventos que no estén en estado "results" (completados)
+        // Filtrar eventos que no estén en estado "results" o "completed"
         const activeEvents = response.filter(
-          (event) => event.status !== "results"
+          (event) => event.status !== "results" && event.status !== "completed"
         );
 
         if (activeEvents.length === 0) {
@@ -153,6 +174,72 @@ export default function renderDashboard(data = {}) {
     }
   }
 
+  // Función para cargar eventos completados
+  async function loadCompletedEvents(userId) {
+    const completedEventsContainer = document.getElementById(
+      "completed-events-container"
+    );
+    completedEventsContainer.innerHTML =
+      '<div class="loading">Cargando resultados...</div>';
+
+    try {
+      const response = await makeRequest(
+        `/events?userId=${userId}&isOrg=false`,
+        "GET"
+      );
+
+      if (response && Array.isArray(response)) {
+        // Filtrar eventos que estén en estado "completed"
+        const completedEvents = response.filter(
+          (event) => event.status === "completed"
+        );
+
+        if (completedEvents.length === 0) {
+          completedEventsContainer.innerHTML = `
+            <div class="no-events">
+              <h4>No tienes resultados disponibles</h4>
+              <p>Los resultados aparecerán aquí una vez que tus eventos sean completados</p>
+            </div>
+          `;
+          return;
+        }
+
+        // Crear tarjetas de resultados
+        const resultsHTML = completedEvents
+          .map((event) => createResultCard(event))
+          .join("");
+        completedEventsContainer.innerHTML = resultsHTML;
+
+        // Agregar event listeners a las tarjetas de resultados
+        completedEvents.forEach((event) => {
+          document
+            .getElementById(`result-card-${event.id}`)
+            .addEventListener("click", () => {
+              // Navegar a reportView con el evento
+              navigateTo("/report-view", { event: event });
+            });
+        });
+      } else {
+        completedEventsContainer.innerHTML = `
+          <div class="error-message">
+            <h4>Error al cargar resultados</h4>
+            <p>No se pudieron cargar los resultados. Intenta nuevamente.</p>
+            <button onclick="loadCompletedEvents(${userId})" class="btn btn-secondary">Reintentar</button>
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error("Error loading completed events:", error);
+      completedEventsContainer.innerHTML = `
+        <div class="error-message">
+          <h4>Error de conexión</h4>
+          <p>No se pudo conectar con el servidor. Verifica tu conexión e intenta nuevamente.</p>
+          <button onclick="loadCompletedEvents(${userId})" class="btn btn-secondary">Reintentar</button>
+        </div>
+      `;
+    }
+  }
+
   // Función para crear tarjeta de evento
   function createEventCard(event) {
     const statusText = getStatusText(event.status);
@@ -176,6 +263,32 @@ export default function renderDashboard(data = {}) {
     `;
   }
 
+  // Función para crear tarjeta de resultado
+  function createResultCard(event) {
+    const substanceCount = event.substances ? event.substances.length : 0;
+
+    return `
+      <div class="result-card completed" id="result-card-${event.id}">
+        <div class="result-card-header">
+          <h4>${event.eventName}</h4>
+          <span class="result-status">✅ Completado</span>
+        </div>
+        <div class="result-card-body">
+          <p class="event-location">📍 ${event.eventLocation}</p>
+          <p class="event-date">📅 ${formatEventDate(event.eventStartDate)}</p>
+          <p class="event-created">Creado: ${event.createdAt}</p>
+          <p class="substances-count">🧪 ${substanceCount} análisis ${
+      substanceCount === 1 ? "realizado" : "realizados"
+    }</p>
+          <p class="report-id">ID del informe: ${event.id}</p>
+        </div>
+        <div class="result-card-footer">
+          <button class="btn btn-primary">Ver resultados completos</button>
+        </div>
+      </div>
+    `;
+  }
+
   // Función para obtener texto del estado
   function getStatusText(status) {
     const statusMap = {
@@ -185,6 +298,7 @@ export default function renderDashboard(data = {}) {
       "on-site": "En sitio",
       analyzing: "Analizando",
       results: "Completado",
+      completed: "Completado",
     };
     return statusMap[status] || "Desconocido";
   }
@@ -281,6 +395,7 @@ export default function renderDashboard(data = {}) {
     navigateTo("/login");
   });
 
-  // Hacer la función loadUserEvents disponible globalmente para el botón de reintentar
+  // Hacer las funciones disponibles globalmente para los botones de reintentar
   window.loadUserEvents = loadUserEvents;
+  window.loadCompletedEvents = loadCompletedEvents;
 }
