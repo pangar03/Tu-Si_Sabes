@@ -1,0 +1,458 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Lexend", sans-serif;
+  box-sizing: border-box;
+}
+
+/* --- Auth Container (Login/Register) --- */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Organization Login Background */
+body:has(#login-form) .auth-container {
+  background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%);
+}
+
+/* Organization Register Background */
+body:has(#register-form) .auth-container {
+  background: linear-gradient(135deg, #7bf809 0%, #62c607 100%);
+}
+
+/* Organization Login Background Pattern - Responsive */
+body:has(#login-form) .auth-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("assets/org-login-background.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* Organization Register Background Pattern - Responsive */
+body:has(#register-form) .auth-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("assets/org-login-responsive.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* Decorative Elements - Solo visible en desktop */
+body:has(#login-form) .auth-container::after,
+body:has(#register-form) .auth-container::after {
+  display: none;
+}
+
+/* Header Section with Decorative Elements */
+.auth-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.auth-header::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 100px;
+  background-image: url("assets/espiral.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+/* Badge-like labels - Solo visible en desktop */
+.decorative-badges {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.badge {
+  position: absolute;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Organization Login badges */
+body:has(#login-form) .badge-fiestas {
+  top: 15%;
+  left: 10%;
+  background: #7bf809;
+  color: #000;
+}
+
+body:has(#login-form) .badge-diversion {
+  top: 20%;
+  right: 15%;
+  background: #ffb6e5;
+  color: #000;
+}
+
+body:has(#login-form) .badge-control {
+  bottom: 35%;
+  right: 25%;
+  background: #ff1493;
+  color: white;
+}
+
+/* Organization Register badges */
+body:has(#register-form) .badge-fiestas {
+  top: 15%;
+  left: 10%;
+  background: #000;
+  color: white;
+}
+
+body:has(#register-form) .badge-diversion {
+  top: 20%;
+  right: 15%;
+  background: #ffb6e5;
+  color: #000;
+}
+
+body:has(#register-form) .badge-control {
+  bottom: 35%;
+  right: 25%;
+  background: #ff1493;
+  color: white;
+}
+
+/* Central connector element - Solo visible en mobile */
+.central-connector {
+  display: none;
+}
+
+.auth-container h2 {
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  z-index: 3;
+  position: relative;
+  padding: 1rem 0rem;
+}
+
+.auth-form {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+  width: 100%;
+  z-index: 3;
+  position: relative;
+  margin-top: 2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #ddfbc7;
+  font-size: 1rem;
+}
+
+.form-group input::placeholder {
+  color: #666;
+  opacity: 0.8;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  background-color: #a8e82b;
+  transform: scale(1.02);
+  box-shadow: 0 0 0 3px rgba(184, 255, 53, 0.3);
+  outline: none;
+}
+
+.form-actions {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.btn {
+  background-color: #e645a4;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #e645a4;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #d03896;
+  transform: scale(1.05);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.message {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.switch-form {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #666;
+}
+
+.switch-form a {
+  color: #ff1493;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.switch-form a:hover {
+  text-decoration: underline;
+}
+
+/* Bottom text - Solo visible en mobile */
+.bottom-text {
+  display: none;
+}
+
+/* --- Responsive Design --- */
+
+/* Tablet - 768px a 1024px */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .auth-container {
+    padding: 1.5rem;
+  }
+
+  .auth-form {
+    max-width: 450px;
+  }
+
+  .badge {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+/* Mobile Large - 481px a 768px */
+@media (max-width: 768px) {
+  /* Usar fondos responsivos para mobile */
+  body:has(#login-form) .auth-container::before {
+    background-image: url("assets/org-login-responsive.svg");
+    background-size: contain;
+    background-position: center center;
+  }
+
+  body:has(#register-form) .auth-container::before {
+    background-image: url("assets/org-register-responsive.svg");
+    background-size: contain;
+    background-position: center center;
+  }
+
+  .auth-container {
+    padding: 1rem;
+  }
+
+  .auth-form {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  /* Ocultar badges en tablets y móviles */
+  .decorative-badges {
+    display: none;
+  }
+
+  /* Mostrar conector central en mobile */
+  .central-connector {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 180px;
+    height: 50px;
+    background: white;
+    border-radius: 30px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+  }
+
+  .central-connector::before {
+    content: "🏢 organizaciones";
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-right: 8px;
+  }
+
+  .central-connector::after {
+    content: "& eventos";
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  /* Remover el espiral adicional ya que los SVGs responsivos incluyen decoraciones */
+  body:has(#login-form) .auth-container::after,
+  body:has(#register-form) .auth-container::after {
+    display: none;
+  }
+}
+
+/* Mobile Small - 320px a 480px */
+@media (max-width: 480px) {
+  /* Mantener fondos responsivos para móviles pequeños */
+  body:has(#login-form) .auth-container::before,
+  body:has(#register-form) .auth-container::before {
+    background-size: contain;
+    background-position: center center;
+  }
+
+  .auth-container {
+    padding: 0.5rem;
+  }
+
+  .auth-form {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .auth-container h2 {
+    font-size: 1.3rem;
+    padding: 0.8rem 0rem;
+  }
+
+  .central-connector {
+    width: 160px;
+    height: 45px;
+  }
+
+  .central-connector::before,
+  .central-connector::after {
+    font-size: 12px;
+  }
+
+  .bottom-text {
+    bottom: 60px;
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+  }
+}
+
+/* Extra Small - Menos de 320px */
+@media (max-width: 320px) {
+  /* Asegurar que los fondos responsivos se mantengan optimizados */
+  body:has(#login-form) .auth-container::before,
+  body:has(#register-form) .auth-container::before {
+    background-size: cover;
+    background-position: center top;
+  }
+
+  .auth-container {
+    padding: 0.25rem;
+  }
+
+  .auth-form {
+    padding: 0.8rem;
+  }
+
+  .auth-container h2 {
+    font-size: 1.2rem;
+    padding: 0.6rem 0rem;
+  }
+
+  .central-connector {
+    width: 140px;
+    height: 40px;
+  }
+
+  .central-connector::before,
+  .central-connector::after {
+    font-size: 11px;
+  }
+
+  .bottom-text {
+    font-size: 0.8rem;
+    bottom: 40px;
+  }
+}
