@@ -5,8 +5,8 @@ export default function renderRegister(data = {}) {
   const app = document.getElementById("app");
   app.innerHTML = `
     <div class="auth-container">
-      <h2>Crear Cuenta</h2>
-      <form id="register-form" class="auth-form">
+    <form id="register-form" class="auth-form">
+    <h2>Crear Cuenta</h2>
         <div class="form-group">
           <label for="username">Usuario:</label>
           <input type="text" id="username" name="username" required>
