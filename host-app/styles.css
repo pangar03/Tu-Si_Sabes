@@ -161,13 +161,9 @@ body:has(#register-form) .badge-control {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  text-align: center;
   z-index: 3;
   position: relative;
-  background: white;
-  padding: 1rem 2rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0rem;
 }
 
 .auth-form {
@@ -215,6 +211,7 @@ body:has(#register-form) .badge-control {
   background-color: #a8e82b;
   transform: scale(1.02);
   box-shadow: 0 0 0 3px rgba(184, 255, 53, 0.3);
+  outline: none;
 }
 
 .form-actions {
@@ -245,8 +242,8 @@ body:has(#register-form) .badge-control {
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
+  background-color: #d03896;
+  transform: scale(1.05);
 }
 
 .btn-primary:active {
@@ -255,7 +252,6 @@ body:has(#register-form) .badge-control {
 
 .message {
   margin-top: 1rem;
-  padding: 0.8rem;
   border-radius: 12px;
   font-size: 0.9rem;
   text-align: center;
@@ -277,7 +273,6 @@ body:has(#register-form) .badge-control {
   text-align: center;
   margin-top: 1.5rem;
   color: #666;
-  font-size: 0.9rem;
 }
 
 .switch-form a {
@@ -297,12 +292,6 @@ body:has(#register-form) .badge-control {
 
 /* --- Dashboard Container --- */
 .dashboard-container {
-  background: linear-gradient(
-      173deg,
-      rgba(0, 0, 6, 0.75) 7.66%,
-      rgba(0, 0, 108, 0.1) 113.71%
-    ),
-    linear-gradient(174deg, #7bf809 8.18%, #e645a4 116.91%);
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -349,8 +338,9 @@ body:has(#register-form) .badge-control {
 }
 
 .tab:hover:not(.active) {
-  background-color: rgba(230, 69, 164, 0.1);
-  color: #e645a4;
+  background-color: #d03896;
+  transform: scale(1.05);
+  color: #fff;
 }
 
 .dashboard-header {
@@ -360,15 +350,14 @@ body:has(#register-form) .badge-control {
 }
 
 .dashboard-header h2 {
-  color: #fff;
+  color: #333;
   font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .date {
-  color: #fff;
+  color: #333;
   font-size: 1rem;
   margin-bottom: 2rem;
   opacity: 0.9;
@@ -387,7 +376,6 @@ body:has(#register-form) .badge-control {
   font-size: 1.3rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
-  text-align: center;
 }
 
 #event-form {
@@ -398,15 +386,11 @@ body:has(#register-form) .badge-control {
 
 #event-form input,
 #event-form textarea {
-  padding: 1rem;
+  padding: 0.8rem;
+  border-radius: 8px;
   border: none;
-  border-radius: 12px;
-  background-color: #b8ff35;
+  background-color: #ddfbc7;
   font-size: 1rem;
-  color: #333;
-  outline: none;
-  transition: all 0.3s ease;
-  font-family: inherit;
 }
 
 #event-form input::placeholder,
@@ -418,7 +402,7 @@ body:has(#register-form) .badge-control {
 #event-form input:focus,
 #event-form textarea:focus {
   background-color: #a8e82b;
-  transform: scale(1.02);
+  outline: none;
 }
 
 #event-form textarea {
@@ -452,9 +436,9 @@ body:has(#register-form) .badge-control {
 }
 
 #logout-btn {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border: 2px solid #fff;
+  background-color: rgba(255, 255, 255, 0.46);
+  color: #333;
+  border: 2px solid #333;
   border-radius: 12px;
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
@@ -465,8 +449,10 @@ body:has(#register-form) .badge-control {
 }
 
 #logout-btn:hover {
-  background-color: #fff;
-  color: #e645a4;
+  background-color: #d03896;
+  transform: scale(1.05);
+  color: #fff;
+  border: 2px solid #d03896;
 }
 
 /* --- Event Details Container --- */
@@ -782,7 +768,8 @@ body:has(#register-form) .badge-control {
   }
 
   .tabs {
-    flex-direction: column;
+    flex-direction: row;
+    margin-bottom: 1rem;
   }
 
   .tab {
@@ -816,7 +803,7 @@ body:has(#register-form) .badge-control {
 
   .auth-container h2 {
     font-size: 1.3rem;
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem 0rem;
   }
 
   .central-connector {
@@ -893,7 +880,7 @@ body:has(#register-form) .badge-control {
 
   .auth-container h2 {
     font-size: 1.2rem;
-    padding: 0.6rem 1rem;
+    padding: 0.6rem 0rem;
   }
 
   .central-connector {
