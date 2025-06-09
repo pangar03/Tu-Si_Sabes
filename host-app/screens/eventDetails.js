@@ -17,9 +17,17 @@ export default async function renderEventDetails(data = {}) {
         <div class="error-container">
           <h2>Error al cargar el evento</h2>
           <p>No se pudo cargar la información del evento. Intenta nuevamente.</p>
-          <button onclick="history.back()" class="btn btn-primary">←</button>
+          <button id="back-to-dashboard" class="btn btn-primary">← Volver al Dashboard</button>
         </div>
       `;
+
+      // Agregar event listener para regresar al dashboard
+      document
+        .getElementById("back-to-dashboard")
+        .addEventListener("click", () => {
+          navigateTo("/dashboard", { user: data.user });
+        });
+
       return;
     }
   }
@@ -31,9 +39,17 @@ export default async function renderEventDetails(data = {}) {
       <div class="error-container">
         <h2>Evento no encontrado</h2>
         <p>No se encontró la información del evento solicitado.</p>
-        <button onclick="history.back()" class="btn btn-primary">←</button>
+        <button id="back-to-dashboard" class="btn btn-primary">← Volver al Dashboard</button>
       </div>
     `;
+
+    // Agregar event listener para regresar al dashboard
+    document
+      .getElementById("back-to-dashboard")
+      .addEventListener("click", () => {
+        navigateTo("/dashboard", { user: data.user });
+      });
+
     return;
   }
 
@@ -53,7 +69,7 @@ export default async function renderEventDetails(data = {}) {
   const app = document.getElementById("app");
   app.innerHTML = `
         <div class="event-details-container">
-            <button class="back-button" onclick="history.back()">←</button>
+            <button class="back-button" id="back-to-dashboard">←</button>
             <div class="event-card ${getStatusClass(eventData.status)}">
                 <div class="event-card-header">
                     <h2>${eventData.eventName}</h2>
@@ -80,6 +96,11 @@ export default async function renderEventDetails(data = {}) {
             </div>
         </div>
     `;
+
+  // Agregar event listener específico para el botón de regreso
+  document.getElementById("back-to-dashboard").addEventListener("click", () => {
+    navigateTo("/dashboard", { user: data.user });
+  });
 
   // Agregar event listeners solo para las funciones necesarias
   addStatusEventListeners(eventData.status, eventData.id, data.user);
