@@ -297,8 +297,9 @@ export default function renderDashboard(data = {}) {
       confirmed: "Confirmado",
       "on-transit": "En camino",
       "on-site": "En sitio",
-      analyzing: "Analizando", // Corregido: analyzing con 'y'
-      results: "Resultados listos", // Agregado estado results
+      analyzing: "Analizando", // CORREGIDO: era "analizing"
+      analizing: "Analizando", // AGREGADO: mantener compatibilidad
+      results: "Resultados listos", // CORREGIDO: ya estaba bien
       completed: "Completado",
     };
     return statusMap[status] || "Desconocido";
