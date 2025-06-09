@@ -126,22 +126,25 @@ function getStatusClass(status) {
     confirmed: "status-confirmed",
     "on-transit": "status-on-transit",
     "on-site": "status-on-site",
-    analyzing: "status-analyzing", // Corregido: analyzing con 'y'
-    results: "status-results", // Agregado estado results
-    completed: "status-completed", // Agregado estado completed
+    analyzing: "status-analyzing", // CORREGIDO: era "analizing"
+    analizing: "status-analyzing", // AGREGADO: mantener compatibilidad
+    results: "status-results", // CORREGIDO: ya estaba bien
+    completed: "status-completed", // CORREGIDO: ya estaba bien
   };
   return statusClasses[status] || "";
 }
 
+// CAMBIAR LA FUNCIÓN getProgressWidth (línea aproximada 95)
 function getProgressWidth(status) {
   const progressMap = {
     pending: 20,
     confirmed: 40,
     "on-transit": 60,
     "on-site": 80,
-    analyzing: 90, // Corregido: analyzing con 'y'
-    results: 100, // Agregado estado results
-    completed: 100, // Agregado estado completed
+    analyzing: 90, // CORREGIDO: era "analizing"
+    analizing: 90, // AGREGADO: mantener compatibilidad
+    results: 100, // CORREGIDO: ya estaba bien
+    completed: 100, // CORREGIDO: ya estaba bien
   };
   return progressMap[status] || 0;
 }
@@ -164,44 +167,45 @@ function getStatusContent(status) {
   switch (status) {
     case "pending":
       return `
-                <h3>Tu solicitud está siendo revisada</h3>
-                <p>Estamos verificando la disponibilidad para tu evento. Te notificaremos pronto sobre la confirmación.</p>
-            `;
+        <h3>Tu solicitud está siendo revisada</h3>
+        <p>Estamos verificando la disponibilidad para tu evento. Te notificaremos pronto sobre la confirmación.</p>
+      `;
     case "confirmed":
       return `
-                <h3>¡Échele Cabeza ha confirmado su asistencia!</h3>
-                <p>Ten paciencia, siempre llegamos a tiempo. Ya hemos confirmado nuestra asistencia y estaremos pronto dándola toda.</p>
-            `;
+        <h3>¡Échele Cabeza ha confirmado su asistencia!</h3>
+        <p>Ten paciencia, siempre llegamos a tiempo. Ya hemos confirmado nuestra asistencia y estaremos pronto dándola toda.</p>
+      `;
     case "on-transit":
       return `
-                <h3>¡Échele Cabeza está en camino!</h3>
-                <p>Ten paciencia, siempre llegamos a tiempo. Ya estamos en ruta hacia tu evento y llegaremos puntualmente.</p>
-            `;
+        <h3>¡Échele Cabeza está en camino!</h3>
+        <p>Ten paciencia, siempre llegamos a tiempo. Ya estamos en ruta hacia tu evento y llegaremos puntualmente.</p>
+      `;
     case "on-site":
       return `
-                <h3>¡Llegamos!</h3>
-                <p>Abre la puerta, nuestro equipo está listo para apoyar tu evento de la mejor manera.</p>
-            `;
-    case "analyzing": // Corregido: analyzing con 'y'
+        <h3>¡Llegamos!</h3>
+        <p>Abre la puerta, nuestro equipo está listo para apoyar tu evento de la mejor manera.</p>
+      `;
+    case "analyzing": // CORREGIDO: era "analizing"
+    case "analizing": // AGREGADO: mantener compatibilidad
       return `
-                <h3>¡Espera un poco más, estamos analizando! <span class="loading-animation">⏳</span></h3>
-                <p>Nuestro equipo está procesando las muestras recolectadas. Los resultados estarán listos muy pronto.</p>
-            `;
+        <h3>¡Espera un poco más, estamos analizando! <span class="loading-animation">⏳</span></h3>
+        <p>Nuestro equipo está procesando las muestras recolectadas. Los resultados estarán listos muy pronto.</p>
+      `;
     case "results":
       return `
-                <h3>¡Resultados listos! ✅</h3>
-                <p>Los análisis han sido completados. Revisa los resultados de las sustancias analizadas.</p>
-            `;
-    case "completed": // Agregado estado completed
+        <h3>¡Resultados listos! ✅</h3>
+        <p>Los análisis han sido completados. Revisa los resultados de las sustancias analizadas.</p>
+      `;
+    case "completed":
       return `
-                <h3>¡Evento completado! 🎉</h3>
-                <p>El evento ha sido finalizado exitosamente. Todos los resultados están disponibles para su consulta.</p>
-            `;
+        <h3>¡Evento completado! 🎉</h3>
+        <p>El evento ha sido finalizado exitosamente. Todos los resultados están disponibles para su consulta.</p>
+      `;
     default:
       return `
-                <h3>Estado desconocido</h3>
-                <p>Por favor, contacta con soporte para más información.</p>
-            `;
+        <h3>Estado desconocido</h3>
+        <p>Por favor, contacta con soporte para más información.</p>
+      `;
   }
 }
 
@@ -215,22 +219,23 @@ function getStatusActions(status) {
       return `<button class="action-button" onclick="trackLocation()">Seguir ubicación</button>`;
     case "on-site":
       return `<button class="action-button" onclick="contactTeam()">Contactar equipo</button>`;
-    case "analyzing": // Corregido: analyzing con 'y'
+    case "analyzing": // CORREGIDO: era "analizing"
+    case "analizing": // AGREGADO: mantener compatibilidad
       return `
-                <textarea class="input-field" placeholder="¿Quieres agregar algún comentario adicional sobre las muestras?" id="additional-comments"></textarea>
-                <button class="action-button" onclick="submitComments()">Enviar comentarios</button>
-            `;
+        <textarea class="input-field" placeholder="¿Quieres agregar algún comentario adicional sobre las muestras?" id="additional-comments"></textarea>
+        <button class="action-button" onclick="submitComments()">Enviar comentarios</button>
+      `;
     case "results":
       return `
-                <button class="action-button" onclick="downloadReport()">Descargar reporte</button>
-                <button class="action-button secondary" onclick="shareResults()">Compartir resultados</button>
-            `;
-    case "completed": // Agregado estado completed
+        <button class="action-button" onclick="downloadReport()">Descargar reporte</button>
+        <button class="action-button secondary" onclick="shareResults()">Compartir resultados</button>
+      `;
+    case "completed":
       return `
-                <button class="action-button" onclick="downloadReport()">Descargar reporte final</button>
-                <button class="action-button secondary" onclick="shareResults()">Compartir resultados</button>
-                <button class="action-button secondary" onclick="viewFullReport()">Ver reporte completo</button>
-            `;
+        <button class="action-button" onclick="downloadReport()">Descargar reporte final</button>
+        <button class="action-button secondary" onclick="shareResults()">Compartir resultados</button>
+        <button class="action-button secondary" onclick="viewFullReport()">Ver reporte completo</button>
+      `;
     default:
       return `<button class="action-button" onclick="refreshStatus()">Actualizar estado</button>`;
   }
