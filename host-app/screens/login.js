@@ -45,9 +45,9 @@ export default function renderLogin(data = {}) {
         });
 
         if (response.code === 200) {
-          // Login exitoso
+          // Login exitoso - pasar toda la información del usuario
           navigateTo("/dashboard", {
-            user: { username },
+            user: response.user, // ✅ Ahora incluye id, username, isOrg
             message: "Sesión iniciada correctamente",
             messageType: "success",
           });
