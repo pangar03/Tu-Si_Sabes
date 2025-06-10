@@ -892,3 +892,50 @@ body:has(#register-form) .badge-control {
   cursor: pointer;
   transition: all 0.3s ease;
 }
+#primary-substance,
+#adulterant {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #ddfbc7;
+  font-size: 1rem;
+}
+.form-check {
+  margin: 0.5rem 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-check input {
+  width: 20px;
+  height: 20px;
+  background-color: #ddfbc7;
+  appearance: none;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+}
+
+.form-check input:checked {
+  background-color: #a8e82b;
+  border: 2px solid #e645a4;
+}
+
+/* Opcional: agregar una marca de verificación */
+.form-check input:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.form-check label {
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+}
