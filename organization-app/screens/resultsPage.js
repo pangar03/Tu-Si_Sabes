@@ -1,5 +1,5 @@
 import { makeRequest } from "../app.js";
-import { socket } from "../app.js";
+import { socket, navigateTo } from "../app.js";
 
 export default async function renderResultsPage(data = {}) {
   const substancesData = await makeRequest("/substances", "GET");
@@ -20,7 +20,7 @@ export default async function renderResultsPage(data = {}) {
     // En lugar de re-renderizar toda la página, solo actualizar la lista de sustancias
     socket.on("add-substance", (res) => {
       console.log("Nueva sustancia agregada:", res.event);
-      updateSubstanceList(res.event.substances);
+      // Ya no necesitamos actualizar la lista ya que se eliminó
     });
   }
 
@@ -88,59 +88,17 @@ export default async function renderResultsPage(data = {}) {
                 <button type="submit" id="submit-substance">Registrar Sustancia</button>
             </form>
         </div>
+                <!-- Botón para regresar a los detalles del evento -->
+        <div style="text-align: center;">
+            <button type="button" id="back-to-event-details" class="btn btn-secondary btn-back">
+            Regresar a Detalles del Evento
+            </button>
+        </div>
         </div>
         `
             : ""
         }
-        <!-- Contenedor para la lista de sustancias -->
-        <div id="substance-list-container">
-            <h3>Sustancias Registradas</h3>
-            <ul id="substance-list"></ul>
-        </div>`;
-
-  // Función para actualizar solo la lista de sustancias
-  function updateSubstanceList(substances) {
-    const substanceList = document.getElementById("substance-list");
-    if (!substanceList) return;
-
-    substanceList.innerHTML = "";
-
-    if (substances && substances.length > 0) {
-      substances.forEach((substance, index) => {
-        const substanceItem = document.createElement("li");
-        substanceItem.style.cssText = `
-          border: 1px solid #dee2e6;
-          border-radius: 4px;
-          padding: 15px;
-          margin-bottom: 10px;
-          background-color: #fff;
         `;
-        substanceItem.innerHTML = `
-                    <h4 style="color: #495057; margin-bottom: 10px;">Muestra #${
-                      index + 1
-                    } - Sustancia reportada como "${
-          substance.reported_substance
-        }"</h4>
-                    <p style="margin-bottom: 5px;"><strong>Sustancia primaria:</strong> ${
-                      substance.primary_substance
-                    }</p>
-                    <p style="margin-bottom: 5px;"><strong>Adulterante:</strong> ${
-                      substance.adulterant ||
-                      "No se encontraron adulterantes en la sustancia"
-                    }</p>
-                    <p style="margin-bottom: 0;"><strong>Consideraciones:</strong> ${
-                      substance.considerations ||
-                      "No se sugirieron consideraciones adicionales"
-                    }</p>
-                `;
-        substanceList.appendChild(substanceItem);
-      });
-    } else {
-      const noSubstancesMessage = document.createElement("li");
-      noSubstancesMessage.innerHTML = `<p>No se han registrado sustancias aún.</p>`;
-      substanceList.appendChild(noSubstancesMessage);
-    }
-  }
 
   // Solo agregar funcionalidad del formulario si no es modo solo lectura
   if (!isReadOnly) {
@@ -263,9 +221,6 @@ export default async function renderResultsPage(data = {}) {
 
           // Mostrar mensaje de éxito
           showSuccessMessage("Sustancia registrada exitosamente");
-
-          // Actualizar la lista de sustancias localmente
-          updateSubstanceList(data.event.substances);
         } else {
           throw new Error(
             response.message || "Error al registrar la sustancia"
@@ -401,25 +356,35 @@ export default async function renderResultsPage(data = {}) {
         }
       }, 5000);
     }
-  } else {
-    // Funcionalidad para modo solo lectura
-    const backButton = document.getElementById("back-to-event-details");
-    if (backButton) {
-      backButton.addEventListener("click", () => {
-        import("../app.js").then(({ navigateTo }) => {
-          navigateTo("/event-details", data);
-        });
-      });
-    }
-
-    const printButton = document.getElementById("print-report");
-    if (printButton) {
-      printButton.addEventListener("click", () => {
-        window.print();
-      });
-    }
   }
 
-  // Renderizar la lista inicial de sustancias
-  updateSubstanceList(data.event.substances);
+  // Funcionalidad del botón para regresar a detalles del evento
+  const backButton = document.getElementById("back-to-event-details");
+  if (backButton) {
+    backButton.addEventListener("click", async () => {
+      try {
+        // Limpiar listeners de socket antes de navegar
+        socket.off("add-substance");
+        socket.off("change-status");
+
+        // Obtener los datos actualizados del evento antes de navegar
+        const eventResponse = await makeRequest(
+          `/event/${data.event.id}`,
+          "GET"
+        );
+
+        if (eventResponse && eventResponse.id) {
+          // Navegar a la pantalla de detalles del evento con los datos actualizados
+          navigateTo("/event-details", { ...data, event: eventResponse });
+        } else {
+          // Si no se pueden obtener los datos actualizados, usar los datos actuales
+          navigateTo("/event-details", data);
+        }
+      } catch (error) {
+        console.error("Error al obtener datos del evento:", error);
+        // En caso de error, navegar con los datos actuales
+        navigateTo("/event-details", data);
+      }
+    });
+  }
 }
