@@ -64,8 +64,10 @@ export default async function renderResultsPage(data = {}) {
                     <option value="other">Sustancia no registrada</option>
                 </select>
                 <input type="text" id="primary-substance-other" placeholder="Ingrese el nombre de la sustancia hallada" style="display: none;"></input>
-                <label for="adulterant-presence">¿Se ha encontrado algún adulterante?</label>
-                <input type="checkbox" id="adulterant-presence" value="false"></input>
+    <div class="form-check">
+    <label for="adulterant-presence">¿Se ha encontrado algún adulterante?</label>
+        <input type="checkbox" id="adulterant-presence" value="false">
+    </div>
                 <label for="adulterant">Adulterante presente</label>
                 <select id="adulterant" disabled>
                     <option value="">Seleccione un adulterant</option>
@@ -85,26 +87,7 @@ export default async function renderResultsPage(data = {}) {
         </div>
         `
             : ""
-        }
-        <div id="substance-list-container">
-            <h3>${
-              isReadOnly
-                ? "Informe Final de Sustancias"
-                : "Sustancias registradas"
-            }</h3>
-            <ul id="substance-list"></ul>
-        </div>
-        ${
-          isReadOnly
-            ? `
-        <div id="readonly-actions" style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
-            <button class="btn btn-secondary" id="back-to-event-details">Volver a Detalles del Evento</button>
-            <button class="btn btn-primary" id="print-report">Imprimir Informe</button>
-        </div>
-        `
-            : ""
-        }
-    `;
+        }`;
 
   // Función para actualizar solo la lista de sustancias
   function updateSubstanceList(substances) {
