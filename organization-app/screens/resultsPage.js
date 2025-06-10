@@ -43,6 +43,9 @@ export default async function renderResultsPage(data = {}) {
         ${
           !isReadOnly
             ? `
+            <!-- NUEVO: Contenedor para mensajes -->
+            <div id="messages-container"></div>
+            
             <h3>Registro de sustancias</h3>
             <p>Recuerde que si la sustancia no aparece en la base de datos, recuerde seleccionar "Sustancia no registrada" e incluya las consideraciones adicionales</p>
                 <input type="text" id="reported-substance" placeholder="Sustancia reportada a analizar" required>
@@ -87,7 +90,12 @@ export default async function renderResultsPage(data = {}) {
         </div>
         `
             : ""
-        }`;
+        }
+        <!-- Contenedor para la lista de sustancias -->
+        <div id="substance-list-container">
+            <h3>Sustancias Registradas</h3>
+            <ul id="substance-list"></ul>
+        </div>`;
 
   // Función para actualizar solo la lista de sustancias
   function updateSubstanceList(substances) {
@@ -303,7 +311,7 @@ export default async function renderResultsPage(data = {}) {
       }
     }
 
-    // Función para mostrar mensajes de éxito
+    // Función para mostrar mensajes de éxito - VERSIÓN CORREGIDA
     function showSuccessMessage(message) {
       const existingMessage = document.querySelector(".success-message");
       if (existingMessage) {
@@ -323,8 +331,23 @@ export default async function renderResultsPage(data = {}) {
       `;
       messageDiv.textContent = message;
 
-      const form = document.getElementById("substance-form");
-      form.parentNode.insertBefore(messageDiv, form.nextSibling);
+      // CAMBIO: Usar el contenedor específico para mensajes
+      const messagesContainer = document.getElementById("messages-container");
+      if (messagesContainer) {
+        messagesContainer.appendChild(messageDiv);
+      } else {
+        // FALLBACK: Si no existe el contenedor, usar el método anterior pero con verificación
+        const form = document.getElementById("substance-form");
+        if (form && form.parentNode) {
+          form.parentNode.insertBefore(messageDiv, form.nextSibling);
+        } else {
+          // FALLBACK FINAL: Insertarlo al inicio del app
+          const app = document.getElementById("app");
+          if (app && app.firstChild) {
+            app.insertBefore(messageDiv, app.firstChild);
+          }
+        }
+      }
 
       // Remover el mensaje después de 3 segundos
       setTimeout(() => {
@@ -334,7 +357,7 @@ export default async function renderResultsPage(data = {}) {
       }, 3000);
     }
 
-    // Función para mostrar mensajes de error
+    // Función para mostrar mensajes de error - VERSIÓN CORREGIDA
     function showErrorMessage(message) {
       const existingMessage = document.querySelector(".error-message");
       if (existingMessage) {
@@ -354,8 +377,23 @@ export default async function renderResultsPage(data = {}) {
       `;
       messageDiv.textContent = message;
 
-      const form = document.getElementById("substance-form");
-      form.parentNode.insertBefore(messageDiv, form.nextSibling);
+      // CAMBIO: Usar el contenedor específico para mensajes
+      const messagesContainer = document.getElementById("messages-container");
+      if (messagesContainer) {
+        messagesContainer.appendChild(messageDiv);
+      } else {
+        // FALLBACK: Si no existe el contenedor, usar el método anterior pero con verificación
+        const form = document.getElementById("substance-form");
+        if (form && form.parentNode) {
+          form.parentNode.insertBefore(messageDiv, form.nextSibling);
+        } else {
+          // FALLBACK FINAL: Insertarlo al inicio del app
+          const app = document.getElementById("app");
+          if (app && app.firstChild) {
+            app.insertBefore(messageDiv, app.firstChild);
+          }
+        }
+      }
 
       // Remover el mensaje después de 5 segundos
       setTimeout(() => {
