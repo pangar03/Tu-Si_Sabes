@@ -92,10 +92,11 @@ export default async function renderReportView(data = {}) {
         substanceCard.innerHTML = `
           <div class="substance-card-header">
             <h3>${substance.primary_substance.toUpperCase()}</h3>
-            <p class="sub-id">ID del análisis: ${substance.id}</p>
-            <p class="sub-detected">Detectado en laboratorio: <strong>[${substance.primary_substance}${
-              substance.adulterant_presence ? " + " + substance.adulterant : ""
-            }]</strong></p>
+            <p class="sub-detected">Detectado en laboratorio: <strong>[${
+              substance.primary_substance
+            }${
+          substance.adulterant_presence ? " + " + substance.adulterant : ""
+        }]</strong></p>
             ${
               eventData.status === "completed"
                 ? '<div class="status-badge completed">Análisis Completado</div>'
@@ -107,15 +108,11 @@ export default async function renderReportView(data = {}) {
           <div class="substance-badges">
             <div class="badge">
               <p class="badge-title">Duración</p>
-              <p class="badge-value">${
-                substanceData?.duracion || "N/A"
-              }</p>
+              <p class="badge-value">${substanceData?.duracion || "N/A"}</p>
             </div>
             <div class="badge">
               <p class="badge-title">Dosis máx</p>
-              <p class="badge-value">${
-                substanceData?.dosis_max || "N/A"
-              }</p>
+              <p class="badge-value">${substanceData?.dosis_max || "N/A"}</p>
             </div>
             <div class="badge">
               <p class="badge-title">NO redosificar</p>
@@ -127,7 +124,9 @@ export default async function renderReportView(data = {}) {
             <h4>Riesgos</h4>
             ${
               substanceData?.riesgos
-                ? substanceData.riesgos.map((risk) => `<li>${risk}</li>`).join("")
+                ? substanceData.riesgos
+                    .map((risk) => `<li>${risk}</li>`)
+                    .join("")
                 : ""
             }
             ${
@@ -183,7 +182,9 @@ export default async function renderReportView(data = {}) {
             <p>ID del análisis: ${substance.id}</p>
             <p>Resultados preliminares: ${
               substance.primary_substance +
-              (substance.adulterant_presence ? " + " + substance.adulterant : "")
+              (substance.adulterant_presence
+                ? " + " + substance.adulterant
+                : "")
             }</p>
             ${
               eventData.status === "completed"
