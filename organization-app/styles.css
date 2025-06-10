@@ -846,3 +846,49 @@ body:has(#register-form) .badge-control {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
+.dashboard-header {
+  padding: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+#event-details-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+#event-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+}
+#substance-form {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+#substance-form input,
+#substance-form textarea {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #ddfbc7;
+  font-size: 1rem;
+}
+#submit-substance {
+  background-color: #e645a4;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
