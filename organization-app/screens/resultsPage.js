@@ -11,11 +11,12 @@ export default async function renderResultsPage(data = {}) {
   // Verificar si está en modo solo lectura (evento completado)
   const isReadOnly = data.readOnly || data.event.status === "completed";
 
+  // SOLUCIÓN: Limpiar todos los listeners previos para evitar conflictos
+  socket.off("add-substance");
+  socket.off("change-status");
+
   // Solo agregar listeners de socket si no es modo solo lectura
   if (!isReadOnly) {
-    // Remover listeners previos para evitar duplicados
-    socket.off("add-substance");
-
     // En lugar de re-renderizar toda la página, solo actualizar la lista de sustancias
     socket.on("add-substance", (res) => {
       console.log("Nueva sustancia agregada:", res.event);
@@ -238,8 +239,12 @@ export default async function renderResultsPage(data = {}) {
           // Actualizar la data local del evento para mantener sincronización
           data.event = response.event;
 
-          // Cambiar el estado a "results" si no está ya en ese estado
-          if (data.event.status !== "results") {
+          // SOLUCIÓN: Solo cambiar el estado si es la primera sustancia
+          // y el estado actual es "analyzing"
+          if (
+            data.event.status === "analyzing" &&
+            data.event.substances.length === 1
+          ) {
             const statusResponse = await makeRequest(
               `/event/${eventId}/change-status`,
               "POST",
@@ -311,7 +316,7 @@ export default async function renderResultsPage(data = {}) {
       }
     }
 
-    // Función para mostrar mensajes de éxito - VERSIÓN CORREGIDA
+    // Función para mostrar mensajes de éxito
     function showSuccessMessage(message) {
       const existingMessage = document.querySelector(".success-message");
       if (existingMessage) {
@@ -331,17 +336,14 @@ export default async function renderResultsPage(data = {}) {
       `;
       messageDiv.textContent = message;
 
-      // CAMBIO: Usar el contenedor específico para mensajes
       const messagesContainer = document.getElementById("messages-container");
       if (messagesContainer) {
         messagesContainer.appendChild(messageDiv);
       } else {
-        // FALLBACK: Si no existe el contenedor, usar el método anterior pero con verificación
         const form = document.getElementById("substance-form");
         if (form && form.parentNode) {
           form.parentNode.insertBefore(messageDiv, form.nextSibling);
         } else {
-          // FALLBACK FINAL: Insertarlo al inicio del app
           const app = document.getElementById("app");
           if (app && app.firstChild) {
             app.insertBefore(messageDiv, app.firstChild);
@@ -357,7 +359,7 @@ export default async function renderResultsPage(data = {}) {
       }, 3000);
     }
 
-    // Función para mostrar mensajes de error - VERSIÓN CORREGIDA
+    // Función para mostrar mensajes de error
     function showErrorMessage(message) {
       const existingMessage = document.querySelector(".error-message");
       if (existingMessage) {
@@ -377,17 +379,14 @@ export default async function renderResultsPage(data = {}) {
       `;
       messageDiv.textContent = message;
 
-      // CAMBIO: Usar el contenedor específico para mensajes
       const messagesContainer = document.getElementById("messages-container");
       if (messagesContainer) {
         messagesContainer.appendChild(messageDiv);
       } else {
-        // FALLBACK: Si no existe el contenedor, usar el método anterior pero con verificación
         const form = document.getElementById("substance-form");
         if (form && form.parentNode) {
           form.parentNode.insertBefore(messageDiv, form.nextSibling);
         } else {
-          // FALLBACK FINAL: Insertarlo al inicio del app
           const app = document.getElementById("app");
           if (app && app.firstChild) {
             app.insertBefore(messageDiv, app.firstChild);
