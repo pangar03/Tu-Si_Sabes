@@ -11,8 +11,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
+  justify-content: end;
   position: relative;
   overflow: hidden;
 }
@@ -31,10 +30,8 @@ body:has(#register-form) .auth-container {
 body:has(#login-form) .auth-container::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-image: url("assets/org-login-background.svg");
   background-size: cover;
   background-position: center;
@@ -45,11 +42,9 @@ body:has(#login-form) .auth-container::before {
 /* Organization Register Background Pattern - Responsive */
 body:has(#register-form) .auth-container::before {
   content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  height: 100%;
+  height: 70vh;
   background-image: url("assets/org-login-responsive.svg");
   background-size: cover;
   background-position: center;
@@ -306,10 +301,6 @@ body:has(#register-form) .badge-control {
 
 /* Tablet - 768px a 1024px */
 @media (max-width: 1024px) and (min-width: 769px) {
-  .auth-container {
-    padding: 1.5rem;
-  }
-
   .auth-form {
     max-width: 450px;
   }
@@ -325,23 +316,18 @@ body:has(#register-form) .badge-control {
   /* Usar fondos responsivos para mobile */
   body:has(#login-form) .auth-container::before {
     background-image: url("assets/org-login-responsive.svg");
-    background-size: contain;
+    background-size: cover;
     background-position: center center;
   }
 
   body:has(#register-form) .auth-container::before {
     background-image: url("assets/org-register-responsive.svg");
-    background-size: contain;
+    background-size: cover;
     background-position: center center;
-  }
-
-  .auth-container {
-    padding: 1rem;
   }
 
   .auth-form {
     padding: 1.5rem;
-    max-width: 90%;
   }
 
   /* Ocultar badges en tablets y móviles */
@@ -393,12 +379,8 @@ body:has(#register-form) .badge-control {
   /* Mantener fondos responsivos para móviles pequeños */
   body:has(#login-form) .auth-container::before,
   body:has(#register-form) .auth-container::before {
-    background-size: contain;
+    background-size: cover;
     background-position: center center;
-  }
-
-  .auth-container {
-    padding: 0.5rem;
   }
 
   .auth-form {
@@ -435,10 +417,6 @@ body:has(#register-form) .badge-control {
   body:has(#register-form) .auth-container::before {
     background-size: cover;
     background-position: center top;
-  }
-
-  .auth-container {
-    padding: 0.25rem;
   }
 
   .auth-form {
@@ -938,4 +916,14 @@ body:has(#register-form) .badge-control {
 .form-check label {
   cursor: pointer;
   font-family: Arial, sans-serif;
+}
+
+#login-form,
+#register-form {
+  width: 100%;
+  max-width: unset;
+  border-radius: 0;
+  padding: 40px;
+  margin: 0;
+  min-height: 30vh;
 }
