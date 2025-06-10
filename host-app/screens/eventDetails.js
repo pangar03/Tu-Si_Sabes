@@ -73,11 +73,10 @@ export default async function renderEventDetails(data = {}) {
             <div class="event-card ${getStatusClass(eventData.status)}">
                 <div class="event-card-header">
                     <h2>${eventData.eventName}</h2>
-                    <p class="event-time">${formatDate(
+                    <p class="event-time">Inicio: ${
                       eventData.eventStartDate
-                    )} ${formatTime(eventData.eventStartDate)} - ${formatTime(
-    eventData.eventEndDate
-  )}</p>
+                    }</p>
+                    <p class="event-time">Fin: ${eventData.eventEndDate}</p>
                     <p class="event-location">${eventData.eventLocation}</p>
                     <p class="event-created">Creado: ${eventData.createdAt}</p>
                 </div>
@@ -132,20 +131,6 @@ function getProgressWidth(status) {
     completed: 100,
   };
   return progressMap[status] || 0;
-}
-
-function formatTime(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleTimeString("es-CO", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-}
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("es-CO");
 }
 
 function getStatusContent(status) {
