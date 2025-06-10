@@ -220,8 +220,11 @@ async function completedStatus(data) {
   const viewReportButton = document.getElementById("view-final-report");
   if (viewReportButton) {
     viewReportButton.addEventListener("click", () => {
-      socket.off("change-status");
-      navigateTo("/results-page", { ...data, readOnly: true });
+      // Guardar datos del evento en sessionStorage para transferir entre apps
+      sessionStorage.setItem("reportEventData", JSON.stringify(data.event));
+
+      // Redireccionar al endpoint report-access con parámetros para navegación directa
+      window.location.href = `/report-access?action=viewReport&eventId=${data.event.id}`;
     });
   }
 
