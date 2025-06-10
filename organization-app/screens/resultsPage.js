@@ -25,6 +25,7 @@ export default async function renderResultsPage(data = {}) {
 
   const app = document.getElementById("app");
   app.innerHTML = `
+  <div class="dashboard-header">
         <div id="event-details-header">
             <h2>${data.event.eventName}</h2>
             <p>Inicio: ${data.event.eventStartDate}</p>    
@@ -41,9 +42,9 @@ export default async function renderResultsPage(data = {}) {
           !isReadOnly
             ? `
         <div id="substance-register">
+            <form id="substance-form">
             <h3>Registro de sustancias</h3>
             <p>Recuerde que si la sustancia no aparece en la base de datos, recuerde seleccionar "Sustancia no registrada" e incluya las consideraciones adicionales</p>
-            <form id="substance-form">
                 <input type="text" id="reported-substance" placeholder="Sustancia reportada a analizar" required>
                 <label for="primary-substance">Sustancia primaria</label>
                 <select id="primary-substance" required>
@@ -80,6 +81,7 @@ export default async function renderResultsPage(data = {}) {
                 <textarea id="considerations" placeholder="Consideraciones adicionales"></textarea>
                 <button type="submit" id="submit-substance">Registrar Sustancia</button>
             </form>
+        </div>
         </div>
         `
             : ""
