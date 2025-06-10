@@ -1,8 +1,19 @@
 import { makeRequest, navigateTo, socket } from "../app.js";
 
 export default function renderEventDetails(data = {}) {
+  // SOLUCIÓN: Limpiar listeners previos antes de agregar nuevos
+  socket.off("change-status");
+
+  // Agregar el listener solo si estamos en esta pantalla
   socket.on("change-status", (res) => {
-    renderEventDetails({ ...data, event: res.event });
+    // SOLUCIÓN: Verificar que aún estamos en la pantalla de detalles del evento
+    const currentApp = document.getElementById("app");
+    const isOnEventDetailsScreen =
+      currentApp && currentApp.querySelector(".event-details-container");
+
+    if (isOnEventDetailsScreen) {
+      renderEventDetails({ ...data, event: res.event });
+    }
   });
 
   const app = document.getElementById("app");
@@ -145,6 +156,8 @@ async function analyzingStatus(data) {
     `;
 
   document.getElementById("continue-analysis").addEventListener("click", () => {
+    // SOLUCIÓN: Limpiar listeners antes de navegar
+    socket.off("change-status");
     navigateTo("/results-page", data);
   });
 }
@@ -160,6 +173,8 @@ async function resultsStatus(data) {
   document
     .getElementById("continue-adding-substances")
     .addEventListener("click", () => {
+      // SOLUCIÓN: Limpiar listeners antes de navegar
+      socket.off("change-status");
       navigateTo("/results-page", data);
     });
 
@@ -176,6 +191,7 @@ async function resultsStatus(data) {
       if (response.code === 200) {
         alert("Análisis finalizado exitosamente");
         // Opcional: regresar al dashboard
+        socket.off("change-status");
         navigateTo("/dashboard", data);
       } else {
         alert("Error al finalizar el análisis");
@@ -204,12 +220,14 @@ async function completedStatus(data) {
   const viewReportButton = document.getElementById("view-final-report");
   if (viewReportButton) {
     viewReportButton.addEventListener("click", () => {
+      socket.off("change-status");
       navigateTo("/results-page", { ...data, readOnly: true });
     });
   }
 
   // Agregar funcionalidad para volver al dashboard
   document.getElementById("back-to-dashboard").addEventListener("click", () => {
+    socket.off("change-status");
     navigateTo("/dashboard", data);
   });
 }
