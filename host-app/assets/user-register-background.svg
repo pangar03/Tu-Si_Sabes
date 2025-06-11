@@ -1,0 +1,35 @@
+<svg width="1440" height="1024" viewBox="0 0 1440 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_309_1950)">
+<rect width="1440" height="1024" fill="white"/>
+<mask id="mask0_309_1950" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="1440" height="1888">
+<rect width="1440" height="1887.76" fill="#F60989"/>
+</mask>
+<g mask="url(#mask0_309_1950)">
+<rect width="1440" height="1024" fill="url(#paint0_linear_309_1950)"/>
+</g>
+<ellipse cx="330.978" cy="355.249" rx="330.978" ry="355.249" transform="matrix(0.07104 0.997473 -0.998099 0.0616259 550.147 284)" fill="#000006"/>
+<mask id="mask1_309_1950" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="35" y="381" width="100" height="254">
+<path d="M131.209 634.302C110.648 622.429 80.1619 587.263 54.6195 517.378C29.077 447.493 35.2268 396.778 38.7118 381.226C49.7652 392.171 89.759 428.265 115.301 498.15C140.844 568.035 135.73 615.795 131.209 634.302Z" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask1_309_1950)">
+<path d="M131.209 634.302C110.648 622.429 80.1619 587.263 54.6195 517.378C29.077 447.493 35.2268 396.778 38.7118 381.226C49.7652 392.171 89.759 428.265 115.301 498.15C140.844 568.035 135.73 615.795 131.209 634.302Z" fill="#FFBEE5"/>
+<rect width="112.851" height="157.137" rx="56.4255" transform="matrix(0.344142 0.941583 -0.951173 0.301388 165.221 453.916)" fill="black"/>
+</g>
+<mask id="mask2_309_1950" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="170" y="704" width="217" height="177">
+<path d="M170.271 704.114C174.22 726.339 197.512 765.988 257.161 814.619C316.81 863.25 369.508 877.293 386.278 880.222C379.625 866.535 359.037 818.348 299.388 769.717C239.739 721.086 190.37 707.279 170.271 704.114Z" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask2_309_1950)">
+<path d="M170.271 704.114C174.22 726.339 197.512 765.988 257.161 814.619C316.81 863.25 369.508 877.293 386.278 880.222C379.625 866.535 359.037 818.348 299.388 769.717C239.739 721.086 190.37 707.279 170.271 704.114Z" fill="#FFBEE5"/>
+<rect width="112.659" height="147.548" rx="56.3295" transform="matrix(-0.778694 -0.63486 -0.681842 0.725038 358.099 747.822)" fill="black"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_309_1950" x1="240" y1="112.17" x2="535.094" y2="1578.89" gradientUnits="userSpaceOnUse">
+<stop stop-color="#B0FB6B"/>
+<stop offset="1" stop-color="#62C607"/>
+</linearGradient>
+<clipPath id="clip0_309_1950">
+<rect width="1440" height="1024" fill="white"/>
+</clipPath>
+</defs>
+</svg>

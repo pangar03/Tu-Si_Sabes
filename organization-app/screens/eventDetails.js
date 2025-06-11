@@ -1,0 +1,236 @@
+import { makeRequest, navigateTo, socket } from "../app.js";
+
+export default function renderEventDetails(data = {}) {
+  // SOLUCIÓN: Limpiar listeners previos antes de agregar nuevos
+  socket.off("change-status");
+
+  // Agregar el listener solo si estamos en esta pantalla
+  socket.on("change-status", (res) => {
+    // SOLUCIÓN: Verificar que aún estamos en la pantalla de detalles del evento
+    const currentApp = document.getElementById("app");
+    const isOnEventDetailsScreen =
+      currentApp && currentApp.querySelector(".event-details-container");
+
+    if (isOnEventDetailsScreen) {
+      renderEventDetails({ ...data, event: res.event });
+    }
+  });
+
+  const app = document.getElementById("app");
+  app.innerHTML = `
+  <div class="event-details-container">
+<div class="event-card">
+        <div id="event-details-header">
+            <h2>${data.event.eventName}</h2>
+            <p>Inicio: ${data.event.eventStartDate}</p>    
+            <p>Fin: ${data.event.eventEndDate}</p>    
+            <h4>${data.event.eventLocation}</h4>
+        </div>
+        <div id="event-details-body">
+            <h3>Detalles del evento</h3>
+            <p>${data.event.eventDescription}</p>
+            ${
+              data.event.substances && data.event.substances.length > 0
+                ? `<div id="substances-summary">
+                <h4>Sustancias registradas: ${data.event.substances.length}</h4>
+                <p>Se han registrado sustancias para este evento.</p>
+              </div>`
+                : ""
+            }    
+        </div>
+        <div id="event-details-buttons"></div>
+        </div>
+        </div>
+    `;
+
+  switch (data.event.status) {
+    case "pending":
+      pendingStatus(data);
+      break;
+    case "confirmed":
+      confirmedStatus(data);
+      break;
+    case "on-transit":
+      confirmedStatus(data);
+      break;
+    case "on-site":
+      onSiteStatus(data);
+      break;
+    case "analyzing": // CORREGIDO: era "analizing"
+    case "analizing": // AGREGADO: mantener compatibilidad
+      analyzingStatus(data);
+      break;
+    case "results":
+      resultsStatus(data);
+      break;
+    case "completed":
+      completedStatus(data);
+      break;
+    default:
+      break;
+  }
+}
+
+async function pendingStatus(data) {
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
+        <button class="btn btn-primary" id="confirm-event">Confirmar Evento</button>
+    `;
+
+  document
+    .getElementById("confirm-event")
+    .addEventListener("click", async () => {
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "confirmed",
+        }
+      );
+      console.log("Response from confirm event:", response);
+    });
+}
+
+async function confirmedStatus(data) {
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
+        <button class="btn btn-primary" id="on-transit-event">Ir al lugar</button>
+        <button class="btn btn-primary" id="on-site-event">Anunciar llegada</button>
+    `;
+
+  document
+    .getElementById("on-transit-event")
+    .addEventListener("click", async () => {
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "on-transit",
+        }
+      );
+      alert("Anunciando salida hacia el lugar del evento");
+      console.log("Response from on-transit:", response);
+    });
+
+  document
+    .getElementById("on-site-event")
+    .addEventListener("click", async () => {
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "on-site",
+        }
+      );
+      alert("Anunciando llegada al lugar del evento");
+      console.log("Response from on-site:", response);
+    });
+}
+
+async function onSiteStatus(data) {
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
+    <button class="btn btn-primary" id="analyzing-event">Empezar análisis</button>
+  `;
+
+  document
+    .getElementById("analyzing-event")
+    .addEventListener("click", async () => {
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "analyzing", // CORREGIDO: era "analizing"
+        }
+      );
+      alert("Empezando análisis de sustancias evento");
+      console.log("Response from analyzing:", response);
+    });
+}
+
+// Nueva función para el estado "analizing"
+async function analyzingStatus(data) {
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
+        <button class="btn btn-primary" id="continue-analysis">Continuar con análisis</button>
+    `;
+
+  document.getElementById("continue-analysis").addEventListener("click", () => {
+    // SOLUCIÓN: Limpiar listeners antes de navegar
+    socket.off("change-status");
+    navigateTo("/results-page", data);
+  });
+}
+
+// Nueva función para el estado "results" - permite seguir agregando sustancias
+async function resultsStatus(data) {
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
+        <button class="btn btn-primary" id="continue-adding-substances">Continuar agregando sustancias</button>
+        <button class="btn btn-secondary" id="finish-analysis">Finalizar análisis</button>
+    `;
+
+  document
+    .getElementById("continue-adding-substances")
+    .addEventListener("click", () => {
+      // SOLUCIÓN: Limpiar listeners antes de navegar
+      socket.off("change-status");
+      navigateTo("/results-page", data);
+    });
+
+  document
+    .getElementById("finish-analysis")
+    .addEventListener("click", async () => {
+      const response = await makeRequest(
+        `/event/${data.event.id}/change-status`,
+        "POST",
+        {
+          status: "completed",
+        }
+      );
+      if (response.code === 200) {
+        alert("Análisis finalizado exitosamente");
+        // Opcional: regresar al dashboard
+        socket.off("change-status");
+        navigateTo("/dashboard", data);
+      } else {
+        alert("Error al finalizar el análisis");
+      }
+      console.log("Response from finish analysis:", response);
+    });
+}
+
+// Nueva función para el estado "completed" - permite ver la información pero no editar
+async function completedStatus(data) {
+  const container = document.getElementById("event-details-buttons");
+  container.innerHTML = `
+        <div id="completed-status-info">
+            <h4 style="color: #28a745; margin-bottom: 10px;">✓ Evento Completado</h4>
+            <p style="margin-bottom: 15px;">Este evento ha sido finalizado exitosamente. Toda la información está disponible para consulta.</p>
+            ${
+              data.event.substances && data.event.substances.length > 0
+                ? `<button class="btn btn-info" id="view-final-report">Ver Informe Final</button>`
+                : ""
+            }
+            <button class="btn btn-secondary" id="back-to-dashboard">Volver al Dashboard</button>
+        </div>
+    `;
+
+  // Agregar funcionalidad para ver el informe final
+  const viewReportButton = document.getElementById("view-final-report");
+  if (viewReportButton) {
+    viewReportButton.addEventListener("click", () => {
+      // Guardar datos del evento en sessionStorage para transferir entre apps
+      sessionStorage.setItem("reportEventData", JSON.stringify(data.event));
+
+      // Redireccionar al endpoint report-access con parámetros para navegación directa
+      window.location.href = `/report-access?action=viewReport&eventId=${data.event.id}`;
+    });
+  }
+
+  // Agregar funcionalidad para volver al dashboard
+  document.getElementById("back-to-dashboard").addEventListener("click", () => {
+    socket.off("change-status");
+    navigateTo("/dashboard", data);
+  });
+}
