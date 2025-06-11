@@ -92,6 +92,7 @@ export default async function renderReportView(data = {}) {
         substanceCard.innerHTML = `
           <div class="substance-card-header">
             <h3>${substance.primary_substance.toUpperCase()}</h3>
+            <p>ID del análisis: ${substance.id}</p>
             <p class="sub-detected">Detectado en laboratorio: <strong>[${
               substance.primary_substance
             }${
@@ -105,18 +106,18 @@ export default async function renderReportView(data = {}) {
           </div>
           <div class="substance-highlights"></div>
 
-          <div class="substance-badges">
+          <div class="substance-badges" ${substanceData?.es_peligroso || adulterantData?.es_peligroso ? 'style="display: none"' : ""}>
             <div class="badge">
               <p class="badge-title">Duración</p>
-              <p class="badge-value">${substanceData?.duracion || "N/A"}</p>
+              <p class="badge-value">${substanceData?.duracion.duracion_total_horas ? substanceData?.duracion.duracion_total_horas : "N/A"} horas</p>
             </div>
             <div class="badge">
               <p class="badge-title">Dosis máx</p>
-              <p class="badge-value">${substanceData?.dosis_max || "N/A"}</p>
+              <p class="badge-value">${substanceData?.dosis_maxima ? substanceData.dosis_maxima : "NA"}</p>
             </div>
             <div class="badge">
-              <p class="badge-title">NO redosificar</p>
-              <p class="badge-value">🚫</p>
+              <p class="badge-title">Redosificación</p>
+              <p class="badge-value">${substanceData.se_puede_redosificar ? `✅` : `🚫`}</p>
             </div>
           </div>
 
@@ -194,7 +195,7 @@ export default async function renderReportView(data = {}) {
           </div>
           <div class="substance-considerations">
             <h4>Consideraciones</h4>
-            <p>${
+            <p style="color:rgb(255, 0, 102)">${
               substance.considerations ||
               "No se han proporcionado consideraciones adicionales"
             }</p>
