@@ -2,11 +2,16 @@
     {
         "id": "levamisole",
         "nombre_comun": "Levamisol",
+        "nombres_alternativos": [],
         "nombre_quimico": "Levamisole hydrochloride",
         "usos_comunes": ["Corte de cocaína"],
         "sustancias_asociadas": ["cocaina"],
         "frecuencia_aparicion": "alta",
         "es_peligroso": true,
+        "duracion": {
+            "duracion_total_horas": null
+        },
+        "se_puede_redosificar": false,
         "riesgos": [
             "Supresión del sistema inmunológico",
             "Agranulocitosis (reducción de glóbulos blancos)",
@@ -20,11 +25,16 @@
     {
         "id": "fentanilo",
         "nombre_comun": "Fentanilo",
+        "nombres_alternativos": [],
         "nombre_quimico": "Fentanyl",
         "usos_comunes": ["Adulterante en opioides y estimulantes"],
         "sustancias_asociadas": ["heroina", "cocaina", "metanfetamina"],
         "frecuencia_aparicion": "media-alta",
         "es_peligroso": true,
+        "duracion": {
+            "duracion_total_horas": null
+        },
+        "se_puede_redosificar": false,
         "riesgos": [
             "Riesgo extremo de sobredosis incluso en microdosis",
             "Depresión respiratoria severa",
@@ -39,11 +49,16 @@
     {
         "id": "lidocaina",
         "nombre_comun": "Lidocaína",
+        "nombres_alternativos": [],
         "nombre_quimico": "Lidocaine",
         "usos_comunes": ["Corte de cocaína para simular adormecimiento"],
         "sustancias_asociadas": ["cocaina"],
         "frecuencia_aparicion": "alta",
         "es_peligroso": false,
+        "duracion": {
+            "duracion_total_horas": null
+        },
+        "se_puede_redosificar": false,
         "riesgos": [
             "Aumento de toxicidad si se mezcla con otros anestésicos",
             "Irritación nasal o reacciones alérgicas"
@@ -57,11 +72,16 @@
     {
         "id": "cafeina",
         "nombre_comun": "Cafeína",
+        "nombres_alternativos": [],
         "nombre_quimico": "Caffeine",
         "usos_comunes": ["Corte en MDMA, anfetaminas o cocaína"],
         "sustancias_asociadas": ["mdma", "anfetamina", "cocaina"],
         "frecuencia_aparicion": "media",
         "es_peligroso": false,
+        "duracion": {
+            "duracion_total_horas": "3-5"
+        },
+        "se_puede_redosificar": true,
         "riesgos": [
             "Aumento de presión arterial y ritmo cardíaco",
             "Insomnio o ansiedad si se mezcla con otros estimulantes"
@@ -74,11 +94,16 @@
     {
         "id": "borax",
         "nombre_comun": "Bórax",
+        "nombres_alternativos": [],
         "nombre_quimico": "Sodium borate",
         "usos_comunes": ["Corte de ketamina (falsificación)"],
         "sustancias_asociadas": ["ketamina"],
         "frecuencia_aparicion": "baja",
         "es_peligroso": true,
+        "duracion": {
+            "duracion_total_horas": null
+        },
+        "se_puede_redosificar": false,
         "riesgos": [
             "Toxicidad sistémica",
             "Vómitos, diarrea, irritación del tracto digestivo",

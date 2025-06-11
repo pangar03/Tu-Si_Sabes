@@ -3,12 +3,7 @@
         "id": "mdma",
         "nombre_comun": "MDMA",
         "nombres_alternativos": ["Éxtasis", "M", "Molly"],
-        "dosis_recomendada_mg": {
-            "umbral": 40,
-            "ligera": 50,
-            "moderada": 75,
-            "fuerte": 125
-        },
+        "dosis_maxima": "125mg",
         "duracion": {
             "inicio_minutos": "20-60",
             "duracion_total_horas": "4-6"
@@ -31,11 +26,7 @@
         "id": "lsd",
         "nombre_comun": "LSD",
         "nombres_alternativos": ["Ácido", "Trip"],
-        "dosis_recomendada_ug": {
-            "ligera": 50,
-            "moderada": 100,
-            "fuerte": 150
-        },
+        "dosis_maxima": "150ug",
         "duracion": {
             "inicio_minutos": "30-90",
             "duracion_total_horas": "8-12"
@@ -57,11 +48,7 @@
         "id": "ketamina",
         "nombre_comun": "Ketamina",
         "nombres_alternativos": ["Keta", "Special K"],
-        "dosis_recomendada_mg": {
-            "baja": 30,
-            "moderada": 60,
-            "alta": 100
-        },
+        "dosis_maxima": "100mg",
         "duracion": {
             "inicio_minutos": "5-15",
             "duracion_total_horas": "1-2"
@@ -83,11 +70,7 @@
         "id": "cocaina",
         "nombre_comun": "Cocaína",
         "nombres_alternativos": ["Perico", "Flaquita", "Coca"],
-        "dosis_recomendada_mg": {
-            "baja": 20,
-            "moderada": 50,
-            "alta": 100
-        },
+        "dosis_maxima": "100mg",
         "duracion": {
             "inicio_minutos": "1-3",
             "duracion_total_horas": "0.5-1"
@@ -103,6 +86,132 @@
             "No redosificar compulsivamente",
             "Hidratarse bien",
             "Evitar mezclar con alcohol u otros estimulantes"
+        ]
+    },
+    {
+        "id": "psilocibina",
+        "nombre_comun": "Psilocibina",
+        "nombres_alternativos": ["Hongos mágicos", "Shrooms"],
+        "dosis_maxima": "5g",
+        "duracion": {
+            "inicio_minutos": "20-40",
+            "duracion_total_horas": "4-6"
+        },
+        "se_puede_redosificar": false,
+        "riesgos": [
+            "Ansiedad o paranoia en entornos inadecuados",
+            "Náuseas al inicio",
+            "Posibles efectos psicológicos prolongados"
+        ],
+        "recomendaciones": [
+            "Consumir en un entorno tranquilo y seguro",
+            "Tener una persona de confianza sobria presente",
+            "Evitar mezclar con otras sustancias"
+        ]
+    },
+    {
+        "id": "dmt",
+        "nombre_comun": "DMT",
+        "nombres_alternativos": ["La molécula del espíritu"],
+        "dosis_maxima": "40mg",
+        "duracion": {
+            "inicio_minutos": "menos de 1",
+            "duracion_total_horas": "0.2-0.5"
+        },
+        "se_puede_redosificar": false,
+        "riesgos": [
+            "Desorientación intensa",
+            "Posible ansiedad durante el pico",
+            "No mezclar con inhibidores de MAO sin supervisión"
+        ],
+        "recomendaciones": [
+            "Consumir en un lugar seguro y tranquilo",
+            "Tener acompañamiento de confianza",
+            "Prepararse mentalmente antes del uso"
+        ]
+    },
+    {
+        "id": "ayahuasca",
+        "nombre_comun": "Ayahuasca",
+        "nombres_alternativos": ["Yagé", "La medicina"],
+        "dosis_maxima": "100ml",
+        "duracion": {
+            "inicio_minutos": "30-60",
+            "duracion_total_horas": "4-8"
+        },
+        "se_puede_redosificar": false,
+        "riesgos": [
+            "Vómitos y diarrea (efectos purgativos normales)",
+            "Interacciones peligrosas con antidepresivos ISRS",
+            "Experiencias psicológicas intensas"
+        ],
+        "recomendaciones": [
+            "No consumir medicamentos inhibidores de la recaptación de serotonina",
+            "Contar con guía experimentada o entorno ceremonial",
+            "Dieta previa recomendada (dieta ayahuasquera)"
+        ]
+    },
+    {
+        "id": "mescalina",
+        "nombre_comun": "Mescalina",
+        "nombres_alternativos": ["Peyote", "San Pedro"],
+        "dosis_maxima": "500mg",
+        "duracion": {
+            "inicio_minutos": "45-120",
+            "duracion_total_horas": "10-12"
+        },
+        "se_puede_redosificar": false,
+        "riesgos": [
+            "Náuseas intensas al comienzo",
+            "Posible ansiedad durante el ascenso",
+            "Efectos prolongados pueden ser mentalmente agotadores"
+        ],
+        "recomendaciones": [
+            "Tomar en ayunas para evitar náuseas",
+            "Estar en un entorno cómodo y con buena compañía",
+            "Descansar adecuadamente antes y después del uso"
+        ]
+    },
+    {
+        "id": "2cb",
+        "nombre_comun": "2C-B",
+        "nombres_alternativos": ["Nexus", "Bromo"],
+        "dosis_maxima": "30mg",
+        "duracion": {
+            "inicio_minutos": "45-75",
+            "duracion_total_horas": "4-6"
+        },
+        "se_puede_redosificar": true,
+        "riesgos": [
+            "Malestar gastrointestinal",
+            "Ansiedad si se toma en mal estado emocional",
+            "Mayor riesgo de efectos adversos al redosificar"
+        ],
+        "recomendaciones": [
+            "Empezar con dosis bajas si es la primera vez",
+            "No redosificar antes de 2 horas",
+            "Estar acompañado por personas de confianza"
+        ]
+    },
+    {
+        "id": "nitritos",
+        "nombre_comun": "Nitritos de alquilo",
+        "nombres_alternativos": ["Popper", "Rush"],
+        "dosis_maxima": "2 inhalaciones",
+        "duracion": {
+            "inicio_minutos": "inmediato",
+            "duracion_total_horas": "0.1-0.2"
+        },
+        "se_puede_redosificar": true,
+        "riesgos": [
+            "Baja de presión brusca",
+            "Dolor de cabeza",
+            "No usar con disfunción cardiaca"
+        ],
+        "recomendaciones": [
+            "Usar sentado o en un lugar seguro",
+            "No mezclar con viagra o similares",
+            "Evitar redosificar en pocos minutos"
         ]
     }
 ]
